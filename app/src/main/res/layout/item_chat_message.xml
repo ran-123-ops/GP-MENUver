@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:orientation="vertical">
+
+    <!-- ユーザーメッセージ -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardUserMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="64dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/design_default_color_primary"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp">
+
+        <TextView
+            android:id="@+id/tvUserMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- AIメッセージ -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardAiMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginEnd="64dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/design_default_color_surface"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp">
+
+        <TextView
+            android:id="@+id/tvAiMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="@color/design_default_color_on_surface"
+            android:textSize="16sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
