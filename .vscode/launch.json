@@ -1,0 +1,16 @@
+{
+  // VS Code で Android アプリを実行する簡易設定
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Android: Build & Run",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "Android: Run (install & start)",
+      "program": "${workspaceFolder}/noop.js",
+      "cwd": "${workspaceFolder}",
+      "presentation": { "hidden": false, "group": "android" },
+      "console": "internalConsole"
+    }
+  ]
+}

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.voiceapp.databinding.ActivityMainBinding
 import com.example.voiceapp.ui.settings.SettingsFragment
 import android.widget.LinearLayout
+import android.widget.ImageView
+import android.net.Uri
 
 class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.SettingsFragment.OnSettingsSavedListener {
 
@@ -57,6 +59,8 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
                 }
                 R.id.nav_chat -> {
                     navView.setCheckedItem(R.id.nav_chat)
+                    // チャット画面のときはエージェント名をタイトルに表示
+                    supportActionBar?.title = SettingsFragment.getAgentName(this)
                 }
                 R.id.nav_gallery -> {
                     navView.setCheckedItem(R.id.nav_gallery)
@@ -131,6 +135,7 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
         val headerView = navView.getHeaderView(0)
         val userName = SettingsFragment.getUserName(this)
         val agentName = SettingsFragment.getAgentName(this)
+    val userIconUri = SettingsFragment.getUserIconUri(this)
 
         // ナビゲーションヘッダーのクリック機能を修正
         val headerContainer = headerView.findViewById<LinearLayout>(R.id.nav_header_container)
@@ -151,6 +156,16 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
             ?: headerView.findViewById<TextView>(headerView.resources.getIdentifier("textView", "id", packageName))
             ?: (headerView as? LinearLayout)?.getChildAt(1) as? TextView
         titleTextView?.text = "$userName さん"
+
+        // アイコン画像更新
+        val iconView = headerView.findViewById<ImageView>(R.id.imageView)
+        if (userIconUri != null) {
+            try {
+                iconView?.setImageURI(userIconUri)
+            } catch (e: Exception) {
+                // 無効なURIの場合は無視
+            }
+        }
 
         // nav_chatメニュータイトルを動的に変更
         val menu = navView.menu
@@ -182,5 +197,9 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
 
     override fun onSettingsSaved() {
         updateNavHeader()
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        if (navController.currentDestination?.id == R.id.nav_chat) {
+            supportActionBar?.title = SettingsFragment.getAgentName(this)
+        }
     }
 }

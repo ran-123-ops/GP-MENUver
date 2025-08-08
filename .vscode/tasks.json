@@ -1,0 +1,49 @@
+{
+  // VS Code で Gradle を使って Android アプリをビルド & 実行するためのタスク定義
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Gradle: Clean",
+      "type": "shell",
+      "command": "./gradlew clean",
+      "windows": { "command": "gradlew.bat clean" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Gradle: Assemble Debug",
+      "type": "shell",
+      "command": "./gradlew assembleDebug",
+      "windows": { "command": "gradlew.bat assembleDebug" },
+      "group": "build",
+      "problemMatcher": ["$gradle"],
+      "dependsOn": []
+    },
+    {
+      "label": "Gradle: Install Debug",
+      "type": "shell",
+      "command": "./gradlew installDebug",
+      "windows": { "command": "gradlew.bat installDebug" },
+      "problemMatcher": ["$gradle"],
+      "dependsOn": ["Gradle: Assemble Debug"],
+      "detail": "接続された端末/エミュレータに debug APK をインストール"
+    },
+    {
+      "label": "Android: Run (install & start)",
+      "type": "shell",
+      "command": "adb shell am start -n com.example.voiceapp/.MainActivity",
+      "windows": { "command": "adb shell am start -n com.example.voiceapp/.MainActivity" },
+      "problemMatcher": [],
+      "dependsOn": ["Gradle: Install Debug"],
+      "detail": "アプリをインストール後 MainActivity を起動"
+    },
+    {
+      "label": "Android: Logcat (filtered)",
+      "type": "shell",
+      "command": "adb logcat -v time | findstr Voiceapp",
+      "windows": { "command": "adb logcat -v time | findstr Voiceapp" },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}

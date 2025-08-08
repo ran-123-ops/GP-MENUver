@@ -1,25 +1,50 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Voiceapp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+    <!-- Material3 ベーステーマ (DayNight + DynamicColor 対応) -->
+    <style name="Theme.Voiceapp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Brand colors (fallback)。DynamicColors が有効な端末では上書きされます -->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+        <item name="colorPrimaryContainer">@color/purple_200</item>
+        <item name="colorOnPrimaryContainer">@color/purple_700</item>
+
         <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="colorSecondaryContainer">@color/teal_700</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+
+        <!-- Surfaces -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowLightStatusBar">@bool/isLightTheme</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+        <!-- Elevation overlay無効（好みに応じて） -->
+        <item name="elevationOverlayColor">@android:color/transparent</item>
+
+        <!-- Shape / Typography / 等を後で拡張可能 -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Voiceapp.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Voiceapp.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Voiceapp.Large</item>
+    <!-- Global font family placeholder -->
+    <item name="fontFamily">@font/voiceapp_sans</item>
     </style>
 
-    <style name="Theme.Voiceapp.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <!-- 旧 NoActionBar 呼び出し互換 (明示的に残す) -->
+    <style name="Theme.Voiceapp.NoActionBar" parent="Theme.Voiceapp" />
+
+    <style name="Theme.Voiceapp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
+
+    <style name="Theme.Voiceapp.PopupOverlay" parent="ThemeOverlay.Material3.Light" />
+
+    <!-- Shapes -->
+    <style name="ShapeAppearance.Voiceapp.Small" parent="ShapeAppearance.Material3.Corner.Full" />
+    <style name="ShapeAppearance.Voiceapp.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
-
-    <style name="Theme.Voiceapp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.Voiceapp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="ShapeAppearance.Voiceapp.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
 </resources>

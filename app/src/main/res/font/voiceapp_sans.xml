@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 実際のフォント ttf/otf を res/font に追加し、以下の font 元素で指定してください -->
+    <!-- 例: <font android:fontStyle="normal" android:fontWeight="400" android:font="@font/plus_jakarta_sans_regular" /> -->
+</font-family>

@@ -20,11 +20,6 @@
             android:layout_marginBottom="24dp"
             android:gravity="center_vertical">
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_chat"
-                android:layout_marginEnd="16dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -33,18 +28,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Voice App"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/tvCurrentTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2025/01/07 12:00"
-                    android:textSize="14sp"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
@@ -375,24 +364,27 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGoToChat"
+                        style="@style/Widget.Voiceapp.PrimaryButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:text="チャット開始"
-                        android:drawableLeft="@drawable/ic_chat"
-                        android:drawablePadding="8dp" />
+                        app:icon="@drawable/ic_chat"
+                        app:iconGravity="start"
+                        app:iconPadding="8dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGoToSettings"
+                        style="@style/Widget.Voiceapp.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
                         android:text="設定"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:drawableLeft="@android:drawable/ic_menu_preferences"
-                        android:drawablePadding="8dp" />
+                        app:icon="@android:drawable/ic_menu_preferences"
+                        app:iconGravity="start"
+                        app:iconPadding="8dp" />
 
                 </LinearLayout>
 
