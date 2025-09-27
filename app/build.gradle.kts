@@ -34,11 +34,17 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            // 既存proguard設定維持
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        // debugビルドでネットワーク検証時のパフォーマンスより可観測性を優先
+        debug {
+            // 余地: applicationIdSuffix = ".debug" など
         }
     }
     compileOptions {
@@ -64,6 +70,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation("androidx.activity:activity-ktx:1.9.2")
 
     // HTTP client for API communication
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

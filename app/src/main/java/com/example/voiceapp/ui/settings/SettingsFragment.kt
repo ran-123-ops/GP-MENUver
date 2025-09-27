@@ -1,7 +1,6 @@
 package com.example.voiceapp.ui.settings
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.voiceapp.BuildConfig
 import com.example.voiceapp.databinding.FragmentSettingsBinding
 import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.Bitmap
@@ -34,11 +32,13 @@ class SettingsFragment : Fragment() {
         private const val PREFS_NAME = "user_settings"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_AGENT_NAME = "agent_name"
-    private const val KEY_USER_ICON_URI = "user_icon_uri"
+        private const val KEY_USER_ICON_URI = "user_icon_uri"
+        private const val KEY_PERSONALITY = "personality"
 
         // デフォルト値
         const val DEFAULT_USER_NAME = "ユーザー"
         const val DEFAULT_AGENT_NAME = "AIアシスタント"
+        const val DEFAULT_PERSONALITY = "kind" // playful | kind | objective
 
         fun getUserName(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -54,6 +54,11 @@ class SettingsFragment : Fragment() {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val value = prefs.getString(KEY_USER_ICON_URI, null)
             return value?.let { Uri.parse(it) }
+        }
+
+        fun getPersonality(context: Context): String {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY) ?: DEFAULT_PERSONALITY
         }
     }
 
@@ -92,30 +97,38 @@ class SettingsFragment : Fragment() {
         setupClickListeners()
     }
 
-//    private fun setupUI() {
-//        // APIキーの状態を表示
-//        val apiKey = BuildConfig.OPENAI_API_KEY
-//        if (apiKey.isNotEmpty() && apiKey != "your_openai_api_key_here") {
-//            binding.tvApiKeyStatus.text = "APIキー: 設定済み (${apiKey.take(10)}...)"
-//        } else {
-//            binding.tvApiKeyStatus.text = "APIキー: 未設定"
-//        }
-//
-//        // Base URLを表示
-//        binding.tvBaseUrlStatus.text = "Base URL: ${BuildConfig.OPENAI_BASE_URL}"
-//    }
+    //    private fun setupUI() {
+    //        // APIキーの状態を表示
+    //        val apiKey = BuildConfig.OPENAI_API_KEY
+    //        if (apiKey.isNotEmpty() && apiKey != "your_openai_api_key_here") {
+    //            binding.tvApiKeyStatus.text = "APIキー: 設定済み (${apiKey.take(10)}...)"
+    //        } else {
+    //            binding.tvApiKeyStatus.text = "APIキー: 未設定"
+    //        }
+    //
+    //        // Base URLを表示
+    //        binding.tvBaseUrlStatus.text = "Base URL: ${BuildConfig.OPENAI_BASE_URL}"
+    //    }
 
     private fun loadUserSettings() {
         // 保存された設定を読み込み
         val userName = sharedPreferences.getString(KEY_USER_NAME, DEFAULT_USER_NAME)
         val agentName = sharedPreferences.getString(KEY_AGENT_NAME, DEFAULT_AGENT_NAME)
         val iconUriString = sharedPreferences.getString(KEY_USER_ICON_URI, null)
+        val personality = sharedPreferences.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY)
 
         binding.etUserName.setText(userName)
         binding.etAgentName.setText(agentName)
         if (iconUriString != null) {
             val uri = Uri.parse(iconUriString)
             binding.ivUserIcon.setImageURI(uri)
+        }
+        // 性格ラジオ反映
+        when (personality) {
+            "playful" -> binding.rgPersonality.check(binding.radioPlayful.id)
+            "kind" -> binding.rgPersonality.check(binding.radioKind.id)
+            "objective" -> binding.rgPersonality.check(binding.radioObjective.id)
+            else -> binding.rgPersonality.check(binding.radioKind.id)
         }
     }
 
@@ -126,21 +139,40 @@ class SettingsFragment : Fragment() {
         binding.btnPickUserIcon.setOnClickListener {
             pickImage()
         }
+        // 性格: 選択変更で即時保存
+        binding.rgPersonality.setOnCheckedChangeListener { _, checkedId ->
+            val selectedPersonality = when (checkedId) {
+                binding.radioPlayful.id -> "playful"
+                binding.radioKind.id -> "kind"
+                binding.radioObjective.id -> "objective"
+                else -> DEFAULT_PERSONALITY
+            }
+            sharedPreferences.edit().putString(KEY_PERSONALITY, selectedPersonality).apply()
+            // 必要に応じてナビゲーションヘッダー等を更新
+            settingsSavedListener?.onSettingsSaved()
+        }
     }
 
     private fun saveUserSettings() {
         val userName = binding.etUserName.text.toString().trim()
         val agentName = binding.etAgentName.text.toString().trim()
-    val currentIconUri = selectedIconUri
+        val currentIconUri = selectedIconUri
 
         // 空の場合はデフォルト値を使用
         val finalUserName = if (userName.isEmpty()) DEFAULT_USER_NAME else userName
         val finalAgentName = if (agentName.isEmpty()) DEFAULT_AGENT_NAME else agentName
+        val selectedPersonality = when (binding.rgPersonality.checkedRadioButtonId) {
+            binding.radioPlayful.id -> "playful"
+            binding.radioKind.id -> "kind"
+            binding.radioObjective.id -> "objective"
+            else -> DEFAULT_PERSONALITY
+        }
 
         // SharedPreferencesに保存
         sharedPreferences.edit()
             .putString(KEY_USER_NAME, finalUserName)
             .putString(KEY_AGENT_NAME, finalAgentName)
+            .putString(KEY_PERSONALITY, selectedPersonality)
             .apply {
                 if (currentIconUri != null) {
                     putString(KEY_USER_ICON_URI, currentIconUri.toString())

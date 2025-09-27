@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:background="@color/ios_bg_secondary">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
@@ -20,19 +21,66 @@
         android:id="@+id/messageInputContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:paddingVertical="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
-            android:layout_width="0dp"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardImagePreview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="メッセージを入力">
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/ios_bg_primary"
+            app:cardCornerRadius="18dp"
+            app:strokeColor="@color/ios_separator"
+            app:strokeWidth="1dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/ivImagePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/chat_image_preview"
+                    android:scaleType="centerCrop" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRemoveImage"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="12dp"
+                    android:layout_gravity="end|top"
+                    android:backgroundTint="@color/ios_bg_primary"
+                    android:contentDescription="@string/chat_remove_image"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/ic_close"
+                    app:iconTint="@color/ios_secondary_label" />
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMessage"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/chat_hint_message"
+            app:boxBackgroundColor="@color/ios_bg_primary"
+            app:boxStrokeColor="@color/ios_separator"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="1dp"
+            app:boxCornerRadiusTopStart="18dp"
+            app:boxCornerRadiusTopEnd="18dp"
+            app:boxCornerRadiusBottomStart="18dp"
+            app:boxCornerRadiusBottomEnd="18dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMessage"
@@ -40,17 +88,64 @@
                 android:layout_height="wrap_content"
                 android:maxLines="4"
                 android:imeOptions="actionSend"
-                android:inputType="textCapSentences|textMultiLine" />
-
+                android:inputType="textCapSentences|textMultiLine"
+                android:textColor="@color/ios_label"
+                android:textColorHint="@color/ios_secondary_label" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSend"
-            style="@style/Widget.Voiceapp.PrimaryButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="送信" />
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="6dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClear"
+                style="@style/Widget.Voiceapp.ChatButton.Clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/chat_clear"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMic"
+                style="@style/Widget.Voiceapp.ChatButton.Mic"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/chat_mic"
+                app:icon="@drawable/ic_mic"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAttach"
+                style="@style/Widget.Voiceapp.ChatButton.Attach"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/chat_attach"
+                app:icon="@drawable/ic_image"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSend"
+                style="@style/Widget.Voiceapp.ChatButton.Send"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:minHeight="56dp"
+                android:layout_marginStart="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="28dp"
+                android:text="@string/chat_send"
+                app:icon="@drawable/ic_send"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator

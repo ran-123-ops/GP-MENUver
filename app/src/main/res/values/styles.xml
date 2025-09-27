@@ -3,7 +3,6 @@
     <style name="Widget.Voiceapp.Card" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">16dp</item>
         <item name="cardUseCompatPadding">true</item>
-        <item name="android:clipToOutline">true</item>
     </style>
 
     <style name="Widget.Voiceapp.PrimaryButton" parent="Widget.Material3.Button">
@@ -14,5 +13,70 @@
 
     <style name="Widget.Voiceapp.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- 追加: チャット用ボタンスタイル -->
+    <style name="Widget.Voiceapp.ChatButton.IconBase" parent="Widget.Material3.Button.Icon">
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">28dp</item>
+        <item name="android:minWidth">56dp</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.Voiceapp.ChatButton.Clear" parent="Widget.Voiceapp.ChatButton.IconBase">
+        <item name="backgroundTint">@color/chat_mic_container</item>
+        <item name="strokeColor">@color/chat_clear_stroke</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="iconTint">@color/chat_clear_icon</item>
+        <item name="android:tooltipText">@string/chat_clear</item>
+    </style>
+
+    <style name="Widget.Voiceapp.ChatButton.Mic" parent="Widget.Voiceapp.ChatButton.IconBase">
+        <item name="backgroundTint">@color/chat_mic_container</item>
+        <item name="iconTint">@color/chat_mic_icon</item>
+        <item name="android:tooltipText">@string/chat_mic</item>
+        <!-- 追加: 押下時デザイン変化を抑制 -->
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:foreground">@null</item>
+    </style>
+
+    <style name="Widget.Voiceapp.ChatButton.Attach" parent="Widget.Voiceapp.ChatButton.IconBase">
+        <item name="backgroundTint">@color/chat_attach_bg</item>
+        <item name="iconTint">@color/chat_attach_icon</item>
+        <item name="android:tooltipText">@string/chat_attach</item>
+        <item name="rippleColor">@color/chat_ripple</item>
+    </style>
+
+    <style name="Widget.Voiceapp.ChatButton.Send" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/chat_send_bg</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
+        <item name="rippleColor">@color/chat_ripple</item>
+        <item name="android:tooltipText">@string/chat_send</item>
+        <item name="android:minHeight">56dp</item>
+        <!-- 追加: アイコンサイズとテキスト横余白最適化 -->
+        <item name="iconSize">20dp</item>
+        <item name="iconPadding">4dp</item>
+    </style>
+
+    <!-- Chat bubble shapes (iMessage-like) -->
+    <style name="ShapeAppearance.Voiceapp.Bubble.Base" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+    <style name="ShapeAppearance.Voiceapp.Bubble.Outgoing" parent="ShapeAppearance.Voiceapp.Bubble.Base">
+        <!-- start/end をサポートしない環境向けに right/left を使用 -->
+        <item name="cornerSizeBottomRight">4dp</item>
+    </style>
+    <style name="ShapeAppearance.Voiceapp.Bubble.Incoming" parent="ShapeAppearance.Voiceapp.Bubble.Base">
+        <item name="cornerSizeBottomLeft">4dp</item>
     </style>
 </resources>

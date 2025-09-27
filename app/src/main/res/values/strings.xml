@@ -11,4 +11,17 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <!-- 追加 -->
+    <string name="chat_hint_message">メッセージを入力</string>
+    <string name="chat_clear">全消去</string>
+    <string name="chat_mic">音声入力</string>
+    <string name="chat_send">送信</string>
+    <string name="chat_cleared">チャットをクリアしました</string>
+    <string name="chat_clear_confirm_title">全消去</string>
+    <string name="chat_clear_confirm_message">すべてのメッセージを削除しますか？</string>
+    <string name="chat_clear_confirm_positive">削除</string>
+    <string name="chat_clear_confirm_negative">キャンセル</string>
+    <string name="chat_attach">画像を選択</string>
+    <string name="chat_image_preview">選択した画像のプレビュー</string>
+    <string name="chat_remove_image">選択画像を削除</string>
 </resources>

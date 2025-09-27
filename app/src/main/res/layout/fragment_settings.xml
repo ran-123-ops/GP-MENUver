@@ -110,6 +110,55 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- 性格設定セクション -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="性格設定"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <RadioGroup
+                    android:id="@+id/rgPersonality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/radioPlayful"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="おちゃめ" />
+
+                    <RadioButton
+                        android:id="@+id/radioKind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="優しい" />
+
+                    <RadioButton
+                        android:id="@+id/radioObjective"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="客観的" />
+                </RadioGroup>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- API設定セクション -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -161,22 +210,22 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-<!--        &lt;!&ndash; アクションボタン &ndash;&gt;-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:layout_marginTop="16dp">-->
+        <!--        &lt;!&ndash; アクションボタン &ndash;&gt;-->
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:orientation="vertical"-->
+        <!--            android:layout_marginTop="16dp">-->
 
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/btnAbout"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="このアプリについて"-->
-<!--                style="@style/Widget.Material3.Button.OutlinedButton" />-->
+        <!--            <com.google.android.material.button.MaterialButton-->
+        <!--                android:id="@+id/btnAbout"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="このアプリについて"-->
+        <!--                style="@style/Widget.Material3.Button.OutlinedButton" />-->
 
-<!--        </LinearLayout>-->
+        <!--        </LinearLayout>-->
 
     </LinearLayout>
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night theme override -->
+    <color name="chat_icon_tint">#FFFFFFFF</color>
+</resources>
+
