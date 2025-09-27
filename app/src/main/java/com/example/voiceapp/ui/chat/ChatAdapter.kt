@@ -1,6 +1,7 @@
 package com.example.voiceapp.ui.chat
 
 import android.graphics.BitmapFactory
+import android.text.method.LinkMovementMethod
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +14,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.voiceapp.R
+import io.noties.markwon.Markwon
 
-class ChatAdapter : ListAdapter<ChatMessage, ChatAdapter.ChatViewHolder>(ChatDiffCallback()) {
+class ChatAdapter(private val markwon: Markwon) : ListAdapter<ChatMessage, ChatAdapter.ChatViewHolder>(ChatDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_chat_message, parent, false)
-        return ChatViewHolder(view)
+        return ChatViewHolder(view, markwon)
     }
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ChatViewHolder(itemView: View, private val markwon: Markwon) : RecyclerView.ViewHolder(itemView) {
         private val cardUserMessage: CardView = itemView.findViewById(R.id.cardUserMessage)
         private val cardAiMessage: CardView = itemView.findViewById(R.id.cardAiMessage)
         private val tvUserMessage: TextView = itemView.findViewById(R.id.tvUserMessage)
@@ -35,6 +37,8 @@ class ChatAdapter : ListAdapter<ChatMessage, ChatAdapter.ChatViewHolder>(ChatDif
         private val tvAiTimestamp: TextView = itemView.findViewById(R.id.tvAiTimestamp)
         private val ivUserImage: ImageView = itemView.findViewById(R.id.ivUserImage)
         private val ivAiImage: ImageView = itemView.findViewById(R.id.ivAiImage)
+
+        private val linkMovementMethod = LinkMovementMethod.getInstance()
 
         fun bind(message: ChatMessage) {
             val timeText = android.text.format.DateFormat.format("HH:mm", message.timestamp).toString()
@@ -65,7 +69,8 @@ class ChatAdapter : ListAdapter<ChatMessage, ChatAdapter.ChatViewHolder>(ChatDif
             val hasText = message.content.isNotBlank()
             textView.visibility = if (hasText) View.VISIBLE else View.GONE
             if (hasText) {
-                textView.text = message.content
+                textView.movementMethod = linkMovementMethod
+                markwon.setMarkdown(textView, message.content)
             } else {
                 textView.text = ""
             }

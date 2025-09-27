@@ -23,8 +23,9 @@ import android.speech.tts.TextToSpeech
 import android.util.Base64
 import android.util.Log
 import android.webkit.MimeTypeMap
-import java.util.Locale
 import com.example.voiceapp.ui.settings.SettingsFragment
+import io.noties.markwon.Markwon
+import java.util.Locale
 
 class ChatFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class ChatFragment : Fragment() {
 
     private lateinit var chatViewModel: ChatViewModel
     private lateinit var chatAdapter: ChatAdapter
+    private lateinit var markwon: Markwon
 
     private var tts: TextToSpeech? = null
     private var lastMessageCount: Int = 0
@@ -69,6 +71,7 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        markwon = Markwon.create(requireContext())
         setupRecyclerView()
         setupClickListeners()
         setupTextToSpeech()
@@ -80,7 +83,7 @@ class ChatFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        chatAdapter = ChatAdapter()
+        chatAdapter = ChatAdapter(markwon)
         binding.rvMessages.apply {
             adapter = chatAdapter
             layoutManager = LinearLayoutManager(context).apply {
@@ -315,6 +318,7 @@ class ChatFragment : Fragment() {
         val userName = SettingsFragment.getUserName(requireContext())
         val agentName = SettingsFragment.getAgentName(requireContext())
         return when (SettingsFragment.getPersonality(requireContext())) {
+            //おちゃめ
             "playful" -> """
                 あなたは${agentName}。${userName}と日本語で会話するAIアシスタントです。
                 ・自分を指すときは一人称「私」を使います。必要に応じて冒頭で「${agentName}です」と名乗っても構いません。
@@ -322,20 +326,25 @@ class ChatFragment : Fragment() {
                 スタイル: おちゃめで親しみやすく、軽いユーモアや絵文字を時々交えます(例: 😊, ✨ を1つ程度)。
                 ただし冗長にならず、要点は簡潔・明瞭に。安全で丁寧な表現を心掛けてください。
                 依頼があれば詳しく、無ければ簡潔に答えます。
+                返答はマークダウン形式で行ってください。
             """.trimIndent()
+            //客観的
             "objective" -> """
                 あなたは${agentName}。${userName}と日本語で会話するAIアシスタントです。
                 ・自分を指すときは一人称「私」を使います。必要に応じて冒頭で「${agentName}です」と名乗っても構いません。
                 ・${userName}の名前を必要に応じて用い、丁寧に対応します。
                 スタイル: 客観的・中立・簡潔。事実ベースで不要な感情表現は避けます。
                 根拠が曖昧な場合は推測と明示し、不確実性を伝えます。必要に応じて箇条書きや手順で整理します。
+                返答はマークダウン形式で行ってください。
             """.trimIndent()
+            //優しく
             else -> """
                 あなたは${agentName}。${userName}と日本語で会話するAIアシスタントです。
                 ・自分を指すときは一人称「私」を使います。必要に応じて冒頭で「${agentName}です」と名乗っても構いません。
                 ・${userName}の気持ちに配慮し、名前を添えた丁寧な呼びかけを行います。
                 スタイル: 優しく丁寧で共感的。相手の意図をくみ取り、安心感のある言い回しを心掛けます。
                 長くなり過ぎないように配慮しつつ、役立つ補足がある場合は短い提案を添えます。
+                返答はマークダウン形式で行ってください。
             """.trimIndent()
         }
     }
