@@ -1,15 +1,10 @@
 package com.example.voiceapp
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -17,20 +12,49 @@ import com.example.voiceapp.databinding.ActivityMainBinding
 import com.example.voiceapp.ui.settings.SettingsFragment
 import android.widget.LinearLayout
 import android.widget.ImageView
-import android.net.Uri
+import androidx.activity.enableEdgeToEdge
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.updatePadding
 
 class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.SettingsFragment.OnSettingsSavedListener {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.ios_bg_primary)
+        WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars =
+            resources.getBoolean(R.bool.isLightTheme)
+
+        val initialAppBarPaddingTop = binding.appBar.paddingTop
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = initialAppBarPaddingTop + systemBars.top)
+            insets
+        }
+
+        val initialNavViewPaddingTop = binding.navView.paddingTop
+        ViewCompat.setOnApplyWindowInsetsListener(binding.navView) { view, insets ->
+            view.updatePadding(top = initialNavViewPaddingTop)
+            insets
+        }
+
+        val navHostFragment = findViewById<View>(R.id.nav_host_fragment_content_main)
+        val initialNavHostPaddingBottom = navHostFragment.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(navHostFragment) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(bottom = initialNavHostPaddingBottom + systemBars.bottom)
+            insets
+        }
 
 //        binding.appBarMain.fab.setOnClickListener { view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -40,39 +64,34 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_chat, R.id.nav_gallery, R.id.nav_slideshow
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // メニューボタンのクリックリスナー
+        binding.menuButton.setOnClickListener {
+            binding.drawerLayout.openDrawer(binding.navView)
+        }
 
         // ナビゲーションの遷移リスナーを追加してメニュー選択状態を正しく管理
         navController.addOnDestinationChangedListener { _, destination, _ ->
             // 現在の画面に応じてメニューの選択状態を更新
             when (destination.id) {
-                R.id.nav_home -> {
-                    navView.setCheckedItem(R.id.nav_home)
-                }
-                R.id.nav_chat -> {
-                    navView.setCheckedItem(R.id.nav_chat)
-                    // チャット画面のときはエージェント名をタイトルに表示
-                    supportActionBar?.title = SettingsFragment.getAgentName(this)
-                }
-                R.id.nav_gallery -> {
-                    navView.setCheckedItem(R.id.nav_gallery)
-                }
-                R.id.nav_slideshow -> {
-                    navView.setCheckedItem(R.id.nav_slideshow)
-                }
-                R.id.action_settings -> {
-                    // 設定画面では何も選択しない
-                    navView.setCheckedItem(View.NO_ID)
-                }
+                R.id.nav_home -> navView.setCheckedItem(R.id.nav_home)
+                R.id.nav_chat -> navView.setCheckedItem(R.id.nav_chat)
+                R.id.nav_gallery -> navView.setCheckedItem(R.id.nav_gallery)
+                R.id.nav_slideshow -> navView.setCheckedItem(R.id.nav_slideshow)
+                R.id.action_settings -> navView.setCheckedItem(View.NO_ID)
+                else -> Unit
             }
+
+            if (destination.id == R.id.nav_chat) {
+                // チャット画面のときはエージェント名をタイトルに表示
+                binding.pageTitle.text = SettingsFragment.getAgentName(this)
+            } else {
+                val resolvedLabel = destination.label?.takeIf { it.isNotEmpty() }
+                    ?: getString(R.string.app_name)
+                binding.pageTitle.text = resolvedLabel
+            }
+
             updateNavHeader()
         }
 
@@ -173,33 +192,11 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
         chatMenuItem?.title = "$agentName と会話"
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                val navController = findNavController(R.id.nav_host_fragment_content_main)
-                navController.navigate(R.id.action_settings)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
     override fun onSettingsSaved() {
         updateNavHeader()
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         if (navController.currentDestination?.id == R.id.nav_chat) {
-            supportActionBar?.title = SettingsFragment.getAgentName(this)
+            binding.pageTitle.text = SettingsFragment.getAgentName(this)
         }
     }
 }
