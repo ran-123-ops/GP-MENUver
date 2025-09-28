@@ -13,7 +13,11 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
+import kotlin.math.max
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,6 +81,7 @@ class ChatFragment : Fragment() {
         setupTextToSpeech()
         setupSpeechRecognizer() // 追加
         setupImagePreview()
+        setupInsetsHandling()
         observeViewModel()
         // 起動時の性格を記録
         lastPersonality = com.example.voiceapp.ui.settings.SettingsFragment.getPersonality(requireContext())
@@ -126,6 +131,35 @@ class ChatFragment : Fragment() {
     private fun setupImagePreview() {
         binding.cardImagePreview.isVisible = false
         binding.btnRemoveImage.setOnClickListener { clearSelectedImage() }
+    }
+
+    private fun setupInsetsHandling() {
+        val initialRvPaddingBottom = binding.rvMessages.paddingBottom
+        val initialInputPaddingBottom = binding.messageInputContainer.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val navBarInset = systemBars.bottom
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val imeExtra = max(0, imeInsets.bottom - navBarInset)
+            val bottomInset = if (imeVisible) imeExtra else navBarInset
+
+            binding.rvMessages.updatePadding(bottom = initialRvPaddingBottom + bottomInset)
+            binding.messageInputContainer.updatePadding(bottom = initialInputPaddingBottom + bottomInset)
+
+            if (imeVisible) {
+                binding.rvMessages.post {
+                    if (chatAdapter.itemCount > 0) {
+                        binding.rvMessages.scrollToPosition(chatAdapter.itemCount - 1)
+                    }
+                }
+            }
+
+            insets
+        }
+
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun launchImagePicker() {
