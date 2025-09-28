@@ -18,8 +18,8 @@
         <item name="android:colorBackground">@color/ios_bg_secondary</item>
         <item name="colorOutline">@color/ios_separator</item>
 
-    <!-- System bars -->
-    <item name="android:statusBarColor">@color/toolbar_title</item>
+        <!-- System bars -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowLightStatusBar">@bool/isLightTheme</item>

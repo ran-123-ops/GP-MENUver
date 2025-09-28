@@ -1,6 +1,7 @@
 package com.example.voiceapp
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.navigation.NavigationView
@@ -13,15 +14,19 @@ import com.example.voiceapp.ui.settings.SettingsFragment
 import android.widget.LinearLayout
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
-import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
+import kotlin.math.abs
+import com.google.android.material.color.MaterialColors
 
 class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.SettingsFragment.OnSettingsSavedListener {
 
     private lateinit var binding: ActivityMainBinding
+    private var swipeStartX: Float = 0f
+    private var swipeStartY: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +36,9 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.ios_bg_primary)
+        val surfaceColor = MaterialColors.getColor(binding.root, com.google.android.material.R.attr.colorSurface)
+        window.statusBarColor = surfaceColor
+        window.navigationBarColor = surfaceColor
         WindowCompat.getInsetsController(window, binding.root).isAppearanceLightStatusBars =
             resources.getBoolean(R.bool.isLightTheme)
 
@@ -198,5 +205,34 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
         if (navController.currentDestination?.id == R.id.nav_chat) {
             binding.pageTitle.text = SettingsFragment.getAgentName(this)
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                swipeStartX = ev.x
+                swipeStartY = ev.y
+            }
+            MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
+                if (!binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    val density = resources.displayMetrics.density
+                    val distanceThreshold = 72f * density
+                    val diffX = ev.x - swipeStartX
+                    val diffY = ev.y - swipeStartY
+
+                    if (diffX > distanceThreshold &&
+                        abs(diffX) > abs(diffY)
+                    ) {
+                        binding.drawerLayout.openDrawer(GravityCompat.START)
+                        return true
+                    }
+                }
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                swipeStartX = 0f
+                swipeStartY = 0f
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }

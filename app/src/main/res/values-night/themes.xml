@@ -1,9 +1,34 @@
 <resources>
     <style name="Theme.Voiceapp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorOnPrimary">@color/black</item>
-    <item name="android:statusBarColor">@color/toolbar_title</item>
+        <item name="colorPrimary">@color/ios_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/ios_bg_secondary</item>
+        <item name="colorOnPrimaryContainer">@color/ios_label</item>
+
+        <item name="colorSecondary">@color/ios_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/ios_bg_secondary</item>
+        <item name="colorOnSecondaryContainer">@color/ios_label</item>
+
+        <item name="colorSurface">@color/ios_bg_primary</item>
+        <item name="colorOnSurface">@color/ios_label</item>
+    <item name="android:colorBackground">@color/ios_bg_secondary</item>
+        <item name="colorOutline">@color/ios_separator</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+        <item name="elevationOverlayColor">@android:color/transparent</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Voiceapp.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Voiceapp.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Voiceapp.Large</item>
+        <item name="fontFamily">@font/voiceapp_sans</item>
     </style>
+
+    <style name="Theme.Voiceapp.NoActionBar" parent="Theme.Voiceapp" />
+    <style name="Theme.Voiceapp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
+    <style name="Theme.Voiceapp.PopupOverlay" parent="ThemeOverlay.Material3.Dark" />
 </resources>
