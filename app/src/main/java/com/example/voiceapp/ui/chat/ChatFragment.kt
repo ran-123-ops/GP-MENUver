@@ -335,7 +335,6 @@ class ChatFragment : Fragment() {
         }
 
         chatViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.tvGenerating.isVisible = isLoading
             binding.btnSend.isEnabled = !isLoading
             binding.btnAttach.isEnabled = !isLoading
         }

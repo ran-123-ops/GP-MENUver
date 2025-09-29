@@ -167,6 +167,13 @@ class ChatViewModel(private val chatHistoryStorage: ChatHistoryStorage) : ViewMo
 
     private fun updateAssistantMessageContent(messageIndex: Int, content: String, persist: Boolean) {
         val current = _messages.value?.toMutableList() ?: mutableListOf()
+        if (persist && content.isBlank()) {
+            if (messageIndex in current.indices) {
+                current.removeAt(messageIndex)
+                updateMessages(current)
+            }
+            return
+        }
         if (messageIndex !in current.indices) {
             if (persist) {
                 updateMessages(current + ChatMessage(content, false))

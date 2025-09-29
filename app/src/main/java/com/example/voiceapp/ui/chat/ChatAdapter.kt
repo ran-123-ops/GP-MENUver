@@ -67,11 +67,17 @@ class ChatAdapter(private val markwon: Markwon) : ListAdapter<ChatMessage, ChatA
 
         private fun bindMessageContent(textView: TextView, imageView: ImageView, message: ChatMessage) {
             val hasText = message.content.isNotBlank()
-            textView.visibility = if (hasText) View.VISIBLE else View.GONE
             if (hasText) {
+                textView.visibility = View.VISIBLE
                 textView.movementMethod = linkMovementMethod
                 markwon.setMarkdown(textView, message.content)
+            } else if (!message.isUser) {
+                textView.visibility = View.VISIBLE
+                textView.movementMethod = null
+                textView.text = textView.context.getString(R.string.chat_generating)
             } else {
+                textView.visibility = View.GONE
+                textView.movementMethod = null
                 textView.text = ""
             }
 
