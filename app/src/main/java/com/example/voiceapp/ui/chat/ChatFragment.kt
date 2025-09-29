@@ -1,6 +1,7 @@
 package com.example.voiceapp.ui.chat
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -112,6 +114,7 @@ class ChatFragment : Fragment() {
                 lastPersonality = currentPersonality
                 binding.etMessage.setText("")
                 clearSelectedImage()
+                hideKeyboard()
             } else {
                 Toast.makeText(requireContext(), "メッセージまたは画像を入力してください", Toast.LENGTH_SHORT).show()
             }
@@ -397,5 +400,14 @@ class ChatFragment : Fragment() {
         speechRecognizer = null
         clearSelectedImage()
         _binding = null
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val windowToken = binding.etMessage.windowToken
+        if (windowToken != null) {
+            imm?.hideSoftInputFromWindow(windowToken, 0)
+        }
+        binding.etMessage.clearFocus()
     }
 }
