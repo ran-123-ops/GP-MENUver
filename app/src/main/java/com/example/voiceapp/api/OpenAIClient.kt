@@ -2,9 +2,11 @@ package com.example.voiceapp.api
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -53,6 +55,57 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
                 val errorBody = response.errorBody()?.string()
                 Result.failure(Exception("API エラー: ${response.code()} - $errorBody"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun streamMessage(
+        messages: List<ChatRequestMessage>,
+        onDelta: suspend (String) -> Unit
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val request = ChatCompletionRequest(messages = messages, stream = true)
+            val response = service.createChatCompletionStream(
+                authorization = "Bearer $apiKey",
+                request = request
+            )
+
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string()
+                return@withContext Result.failure(Exception("API ストリームエラー: ${response.code()} - $errorBody"))
+            }
+
+            val body: ResponseBody = response.body()
+                ?: return@withContext Result.failure(Exception("ストリームレスポンスの取得に失敗しました"))
+
+            body.use { responseBody ->
+                val source = responseBody.source()
+                while (true) {
+                    if (source.exhausted()) break
+                    val line = source.readUtf8Line() ?: continue
+                    if (line.isBlank()) continue
+                    if (!line.startsWith("data:")) continue
+                    val payload = line.removePrefix("data:").trim()
+                    if (payload == "[DONE]") break
+                    if (payload.isBlank()) continue
+
+                    val jsonElement = runCatching { JsonParser.parseString(payload) }.getOrNull()
+                    val jsonObject = jsonElement?.takeIf { it.isJsonObject }?.asJsonObject ?: continue
+                    val choices = jsonObject.getAsJsonArray("choices") ?: continue
+                    if (choices.size() == 0) continue
+                    val choiceObject = choices[0].takeIf { it.isJsonObject }?.asJsonObject ?: continue
+                    val delta = choiceObject.getAsJsonObject("delta") ?: continue
+                    val contentElement = delta.get("content") ?: continue
+
+                    val text = extractContentText(contentElement)
+                    if (!text.isNullOrBlank()) {
+                        onDelta(text)
+                    }
+                }
+            }
+
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

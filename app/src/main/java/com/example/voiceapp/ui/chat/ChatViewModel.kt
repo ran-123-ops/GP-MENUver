@@ -9,7 +9,9 @@ import com.example.voiceapp.api.ChatRequestMessage
 import com.example.voiceapp.api.ImageUrl
 import com.example.voiceapp.api.MessageContent
 import com.example.voiceapp.api.OpenAIClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class ChatMessage(
     val content: String,
@@ -91,16 +93,27 @@ class ChatViewModel(private val chatHistoryStorage: ChatHistoryStorage) : ViewMo
                     chatMessage.toApiMessage()
                 })
 
-                val result = client.sendMessage(apiMessages)
+                val placeholderIndex = addAssistantPlaceholder()
+                val builder = StringBuilder()
 
-                result.fold(
-                    onSuccess = { response ->
-                        val updatedMessages = _messages.value?.toMutableList() ?: mutableListOf()
-                        updatedMessages.add(ChatMessage(response, false))
-                        updateMessages(updatedMessages)
+                val streamResult = client.streamMessage(apiMessages) { delta ->
+                    builder.append(delta)
+                    withContext(Dispatchers.Main) {
+                        updateAssistantMessageContent(placeholderIndex, builder.toString(), persist = false)
+                    }
+                }
+
+                streamResult.fold(
+                    onSuccess = {
+                        withContext(Dispatchers.Main) {
+                            updateAssistantMessageContent(placeholderIndex, builder.toString(), persist = true)
+                        }
                     },
                     onFailure = { exception ->
-                        _error.value = "エラー: ${exception.message}"
+                        withContext(Dispatchers.Main) {
+                            removeAssistantMessage(placeholderIndex)
+                            _error.value = "エラー: ${exception.message}"
+                        }
                     }
                 )
             } catch (e: Exception) {
@@ -142,5 +155,41 @@ class ChatViewModel(private val chatHistoryStorage: ChatHistoryStorage) : ViewMo
     private fun updateMessages(messages: List<ChatMessage>) {
         _messages.value = messages
         chatHistoryStorage.saveMessages(messages)
+    }
+
+    private fun addAssistantPlaceholder(): Int {
+        val list = _messages.value?.toMutableList() ?: mutableListOf()
+        val placeholder = ChatMessage(content = "", isUser = false)
+        list.add(placeholder)
+        _messages.value = list
+        return list.lastIndex
+    }
+
+    private fun updateAssistantMessageContent(messageIndex: Int, content: String, persist: Boolean) {
+        val current = _messages.value?.toMutableList() ?: mutableListOf()
+        if (messageIndex !in current.indices) {
+            if (persist) {
+                updateMessages(current + ChatMessage(content, false))
+            } else {
+                _messages.value = current + ChatMessage(content, false)
+            }
+            return
+        }
+
+        val existing = current[messageIndex]
+        current[messageIndex] = existing.copy(content = content)
+
+        if (persist) {
+            updateMessages(current)
+        } else {
+            _messages.value = current
+        }
+    }
+
+    private fun removeAssistantMessage(messageIndex: Int) {
+        val current = _messages.value?.toMutableList() ?: return
+        if (messageIndex !in current.indices) return
+        current.removeAt(messageIndex)
+        _messages.value = current
     }
 }
