@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(), com.example.voiceapp.ui.settings.Setti
                 R.id.nav_gallery -> navView.setCheckedItem(R.id.nav_gallery)
                 R.id.nav_slideshow -> navView.setCheckedItem(R.id.nav_slideshow)
                 R.id.action_settings -> navView.setCheckedItem(View.NO_ID)
+                R.id.nav_debug -> navView.setCheckedItem(View.NO_ID)
                 else -> Unit
             }
 

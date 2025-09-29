@@ -24,4 +24,23 @@
     <string name="chat_attach">画像を選択</string>
     <string name="chat_image_preview">選択した画像のプレビュー</string>
     <string name="chat_remove_image">選択画像を削除</string>
+    <string name="chat_generating">生成中...</string>
+    <string name="debug_title">デバッグツール</string>
+    <string name="debug_description">アプリの状態確認やリセット操作を行うための開発者向けメニューです。</string>
+    <string name="debug_section_app_info">アプリ情報</string>
+    <string name="debug_app_version_placeholder">バージョン: --</string>
+    <string name="debug_build_type_placeholder">ビルドタイプ: --</string>
+    <string name="debug_package_name_placeholder">パッケージ: --</string>
+    <string name="debug_app_version_format">バージョン: %1$s</string>
+    <string name="debug_build_type_format">ビルドタイプ: %1$s</string>
+    <string name="debug_package_name_format">パッケージ: %1$s</string>
+    <string name="debug_copy_device_info">端末情報をコピー</string>
+    <string name="debug_section_tools">ユーティリティ</string>
+    <string name="debug_clear_chat_history">チャット履歴を削除</string>
+    <string name="debug_reset_settings">設定を初期化</string>
+    <string name="debug_copied_to_clipboard">クリップボードにコピーしました</string>
+    <string name="debug_cleared_chat_history">チャット履歴を削除しました</string>
+    <string name="debug_reset_settings_done">設定を初期化しました</string>
+    <string name="settings_open_debug">デバッグ画面を開く</string>
+    <string name="settings_debug_description">アプリの状態確認やリセット操作を行う開発者向けの画面です。</string>
 </resources>

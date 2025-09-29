@@ -34,4 +34,10 @@
         android:name="com.example.voiceapp.ui.settings.SettingsFragment"
         android:label="設定"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_debug"
+        android:name="com.example.voiceapp.ui.debug.DebugFragment"
+        android:label="@string/debug_title"
+        tools:layout="@layout/fragment_debug" />
 </navigation>

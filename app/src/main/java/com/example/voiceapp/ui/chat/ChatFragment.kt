@@ -332,7 +332,7 @@ class ChatFragment : Fragment() {
         }
 
         chatViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.tvGenerating.isVisible = isLoading
             binding.btnSend.isEnabled = !isLoading
             binding.btnAttach.isEnabled = !isLoading
         }

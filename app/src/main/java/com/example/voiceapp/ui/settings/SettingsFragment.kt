@@ -17,6 +17,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import androidx.navigation.fragment.findNavController
+import com.example.voiceapp.R
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -59,6 +61,11 @@ class SettingsFragment : Fragment() {
         fun getPersonality(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             return prefs.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY) ?: DEFAULT_PERSONALITY
+        }
+
+        fun resetToDefaults(context: Context) {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            prefs.edit().clear().apply()
         }
     }
 
@@ -138,6 +145,9 @@ class SettingsFragment : Fragment() {
         }
         binding.btnPickUserIcon.setOnClickListener {
             pickImage()
+        }
+        binding.btnOpenDebug.setOnClickListener {
+            findNavController().navigate(R.id.nav_debug)
         }
         // 性格: 選択変更で即時保存
         binding.rgPersonality.setOnCheckedChangeListener { _, checkedId ->

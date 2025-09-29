@@ -2,7 +2,7 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">192.168.0.15</domain>
-        <domain includeSubdomains="false">60.120.160.231</domain>
+        <domain includeSubdomains="false">100.111.124.102</domain>
     </domain-config>
 
     <!-- Allow cleartext traffic for local development -->
@@ -11,6 +11,8 @@
         <domain includeSubdomains="true">127.0.0.1</domain>
         <domain includeSubdomains="true">10.0.0.0</domain>
         <domain includeSubdomains="true">192.168.0.0</domain>
+        <domain includeSubdomains="true">100.0.0.0</domain>
+
     </domain-config>
 
     <!-- Default configuration for other domains -->
