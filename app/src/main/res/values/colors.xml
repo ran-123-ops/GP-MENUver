@@ -17,16 +17,16 @@
     <color name="chat_clear_bg">#00000000</color>
     <color name="chat_clear_icon">#FF3B30</color>
     <color name="chat_mic_container">#FFFFFFFF</color>
-    <color name="chat_mic_icon">#0A84FF</color>
-    <color name="chat_send_container">#0A84FF</color>
+    <color name="chat_mic_icon">#09a723</color>
+    <color name="chat_send_container">#09a723</color>
     <color name="chat_send_container_pressed">#0060DF</color>
     <color name="chat_ripple">#330A84FF</color>
-    <color name="chat_send_bg">#0A84FF</color>
+    <color name="chat_send_bg">#09a723</color>
     <color name="chat_attach_bg">#FFFFFFFF</color>
-    <color name="chat_attach_icon">#0A84FF</color>
+    <color name="chat_attach_icon">#09a723</color>
 
     <!-- 追加: Apple(HIG)を意識した色 -->
-    <color name="ios_blue">#0A84FF</color>
+    <color name="ios_blue">#09a723</color>
     <color name="ios_blue_pressed">#0060DF</color>
     <color name="ios_destructive">#FF3B30</color>
     <color name="ios_bg_primary">#FFFFFFFF</color>
@@ -37,7 +37,7 @@
     <color name="ios_ripple">#1F0A84FF</color>
 
     <!-- 追加: チャットバブル色（iMessage風） -->
-    <color name="chat_outgoing_bg">#0A84FF</color>
+    <color name="chat_outgoing_bg">#09a723</color>
     <color name="chat_outgoing_text">#FFFFFFFF</color>
     <color name="chat_incoming_bg">#E9E9EB</color>
     <color name="chat_incoming_text">#000000</color>

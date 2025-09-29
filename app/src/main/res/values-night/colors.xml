@@ -6,12 +6,12 @@
 
     <color name="chat_icon_tint">#C7C7CC</color>
     <color name="chat_mic_container">#2C2C2E</color>
-    <color name="chat_mic_icon">#0A84FF</color>
+    <color name="chat_mic_icon">#09a723</color>
     <color name="chat_attach_bg">#2C2C2E</color>
-    <color name="chat_attach_icon">#0A84FF</color>
+    <color name="chat_attach_icon">#09a723</color>
     <color name="chat_clear_icon">#FF453A</color>
 
-    <color name="ios_blue">#0A84FF</color>
+    <color name="ios_blue">#09a723</color>
     <color name="ios_blue_pressed">#0A5BD9</color>
     <color name="ios_destructive">#FF453A</color>
     <color name="ios_bg_primary">#1C1C1E</color>
@@ -21,7 +21,7 @@
     <color name="ios_secondary_label">#8E8E93</color>
     <color name="ios_ripple">#330A84FF</color>
 
-    <color name="chat_outgoing_bg">#0A84FF</color>
+    <color name="chat_outgoing_bg">#09a723</color>
     <color name="chat_outgoing_text">#FFFFFFFF</color>
     <color name="chat_incoming_bg">#3A3A3C</color>
     <color name="chat_incoming_text">#FFFFFFFF</color>
