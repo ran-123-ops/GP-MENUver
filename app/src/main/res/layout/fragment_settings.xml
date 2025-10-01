@@ -8,14 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp"
+        android:background="@color/ios_bg_secondary">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="設定"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/ios_label"
             android:layout_marginBottom="24dp" />
 
         <!-- ユーザー設定セクション -->
@@ -23,34 +25,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardElevation="2dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="ユーザー設定"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="16dp" />
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:layout_marginBottom="20dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="あなたの名前"
-                    android:layout_marginBottom="12dp">
+                    app:boxBackgroundColor="@color/ios_bg_secondary"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxStrokeWidth="0dp"
+                    app:hintTextColor="@color/ios_secondary_label"
+                    android:layout_marginBottom="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etUserName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
                         android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -60,13 +74,23 @@
                     android:layout_height="wrap_content"
                     android:hint="AIアシスタントの名前"
                     android:id="@+id/AgentName"
-                    android:layout_marginBottom="12dp">
+                    app:boxBackgroundColor="@color/ios_bg_secondary"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxStrokeWidth="0dp"
+                    app:hintTextColor="@color/ios_secondary_label"
+                    android:layout_marginBottom="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAgentName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
                         android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -77,33 +101,37 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="16dp">
 
                     <ImageView
                         android:id="@+id/ivUserIcon"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:src="@mipmap/ic_launcher_round"
                         android:contentDescription="ユーザーアイコン"
                         android:scaleType="centerCrop"
                         android:background="@drawable/user_icon_background"
                         android:padding="0dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginEnd="20dp"
                         android:clipToOutline="true" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPickUserIcon"
+                        style="@style/Widget.Voiceapp.PrimaryButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="アイコン画像を選択" />
+                        android:text="アイコン画像を選択"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveUserSettings"
+                    style="@style/Widget.Voiceapp.PrimaryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="保存"
+                    android:textSize="15sp"
                     android:layout_gravity="end" />
 
             </LinearLayout>
@@ -115,22 +143,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardElevation="2dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="性格設定"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:layout_marginBottom="16dp" />
 
                 <RadioGroup
                     android:id="@+id/rgPersonality"
@@ -141,18 +171,27 @@
                         android:id="@+id/radioPlayful"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
                         android:text="おちゃめ" />
 
                     <RadioButton
                         android:id="@+id/radioKind"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
                         android:text="優しい" />
 
                     <RadioButton
                         android:id="@+id/radioObjective"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
                         android:text="客観的" />
                 </RadioGroup>
 
@@ -164,33 +203,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardElevation="2dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/debug_title"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:textSize="20sp"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_debug_description"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif"
                     android:textColor="@color/ios_secondary_label"
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnOpenDebug"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.Voiceapp.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_open_debug" />
@@ -204,21 +247,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardElevation="2dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="アプリ情報"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
                     android:layout_marginBottom="12dp" />
 
                 <TextView

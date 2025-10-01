@@ -113,11 +113,15 @@ class ChatAdapter(private val markwon: Markwon) : ListAdapter<ChatMessage, ChatA
         private fun animateIn(target: View) {
             if (target.alpha == 1f) return
             target.alpha = 0f
-            target.translationY = 12f
+            target.translationY = 20f
+            target.scaleX = 0.95f
+            target.scaleY = 0.95f
             target.animate()
                 .alpha(1f)
                 .translationY(0f)
-                .setDuration(180)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(250)
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
         }

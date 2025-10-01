@@ -1,5 +1,6 @@
 package com.example.voiceapp.ui.chat
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,10 @@ data class ImageAttachment(
     val dataUrl: String
 )
 
-class ChatViewModel(private val chatHistoryStorage: ChatHistoryStorage) : ViewModel() {
+class ChatViewModel(
+    private val chatHistoryStorage: ChatHistoryStorage,
+    private val context: Context
+) : ViewModel() {
 
     private val _messages = MutableLiveData<List<ChatMessage>>()
     val messages: LiveData<List<ChatMessage>> = _messages
@@ -48,16 +52,47 @@ class ChatViewModel(private val chatHistoryStorage: ChatHistoryStorage) : ViewMo
     }
 
     private fun initializeApiKey() {
-        val apiKey = BuildConfig.OPENAI_API_KEY
-        val baseUrl = BuildConfig.OPENAI_BASE_URL
+        val prefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+        val customApiKey = prefs.getString("custom_api_key", "")?.trim()
+        
+        // カスタムAPIキーがあればそれを使用、なければビルド設定値
+        val apiKey = if (!customApiKey.isNullOrEmpty()) {
+            customApiKey
+        } else {
+            BuildConfig.OPENAI_API_KEY
+        }
+        
+        val baseUrl = getBaseUrl()
 
         if (apiKey.isNotEmpty() && apiKey != "your_openai_api_key_here") {
             openAIClient = OpenAIClient(apiKey, baseUrl)
             _isApiKeyConfigured.value = true
         } else {
             _isApiKeyConfigured.value = false
-            _error.value = "local.propertiesファイルでOPENAI_API_KEYを設定してください"
+            _error.value = "local.propertiesファイルまたはデバッグ画面でAPIキーを設定してください"
         }
+    }
+
+    private fun getBaseUrl(): String {
+        val prefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+        val customIp = prefs.getString("custom_server_ip", "")?.trim()
+        val customPort = prefs.getString("custom_server_port", "")?.trim()
+
+        // カスタムサーバーが設定されている場合
+        if (!customIp.isNullOrEmpty()) {
+            val port = if (!customPort.isNullOrEmpty()) ":$customPort" else ""
+            val protocol = if (customPort == "443") "https" else "http"
+            // URLが既に/v1/で終わっていない場合のみ追加
+            val baseUrl = "$protocol://$customIp$port"
+            return if (baseUrl.endsWith("/v1") || baseUrl.endsWith("/v1/")) {
+                if (baseUrl.endsWith("/v1")) "$baseUrl/" else baseUrl
+            } else {
+                "$baseUrl/v1/"
+            }
+        }
+
+        // デフォルトのOpenAI URL
+        return BuildConfig.OPENAI_BASE_URL
     }
 
     fun sendMessage(userMessage: String?, image: ImageAttachment? = null, systemPrompt: String? = null) {

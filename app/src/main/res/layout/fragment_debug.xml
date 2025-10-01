@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -26,26 +27,189 @@
             android:textColor="@color/ios_secondary_label"
             android:layout_marginBottom="16dp" />
 
+        <!-- API設定カード -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/ios_bg_primary"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="API設定"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OpenAI API互換サーバーのエンドポイントを設定"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/ios_secondary_label"
+                    android:layout_marginBottom="16dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="サーバーIPアドレス"
+                    app:boxBackgroundColor="@color/ios_bg_secondary"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxStrokeWidth="0dp"
+                    app:hintTextColor="@color/ios_secondary_label"
+                    app:helperText="例: 192.168.1.100 (空欄でデフォルトURL)"
+                    app:helperTextTextColor="@color/ios_tertiary_label"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etServerIp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ポート番号"
+                    app:boxBackgroundColor="@color/ios_bg_secondary"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxStrokeWidth="0dp"
+                    app:hintTextColor="@color/ios_secondary_label"
+                    app:helperText="例: 8080 (空欄で443/80)"
+                    app:helperTextTextColor="@color/ios_tertiary_label"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etServerPort"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="APIキー"
+                    app:boxBackgroundColor="@color/ios_bg_secondary"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxStrokeWidth="0dp"
+                    app:hintTextColor="@color/ios_secondary_label"
+                    app:helperText="OpenAI API互換サーバー用 (空欄でビルド設定値)"
+                    app:helperTextTextColor="@color/ios_tertiary_label"
+                    app:endIconMode="password_toggle"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etApiKey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTestConnection"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="接続テスト"
+                        android:textSize="15sp"
+                        android:textColor="@color/ios_blue"
+                        app:strokeColor="@color/ios_blue"
+                        app:cornerRadius="16dp"
+                        android:layout_marginEnd="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSaveApiSettings"
+                        style="@style/Widget.Voiceapp.PrimaryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="保存"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvConnectionStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif"
+                    android:padding="12dp"
+                    android:background="@color/ios_bg_secondary"
+                    android:textColor="@color/ios_secondary_label"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="接続テスト結果がここに表示されます" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/ios_bg_primary"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/debug_section_app_info"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="12dp" />
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="16dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -91,22 +255,24 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/debug_section_tools"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="12dp" />
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnClearChatHistory"

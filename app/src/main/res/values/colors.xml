@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="toolbar">#26292e</color>
-    <color name="toolbar_title">#ffffff</color>
-    <!-- 既存 -->
+    <!-- Material Design 3 Core Palette -->
+    <color name="md_theme_primary">#09a723</color>
+    <color name="md_theme_on_primary">#FFFFFF</color>
+    <color name="md_theme_primary_container">#C2E8CE</color>
+    <color name="md_theme_on_primary_container">#002106</color>
+    
+    <color name="md_theme_secondary">#52634F</color>
+    <color name="md_theme_on_secondary">#FFFFFF</color>
+    <color name="md_theme_secondary_container">#D5E8CF</color>
+    <color name="md_theme_on_secondary_container">#111F0F</color>
+    
+    <color name="md_theme_surface">#FDFDF7</color>
+    <color name="md_theme_on_surface">#1A1C19</color>
+    <color name="md_theme_surface_variant">#DFE4D8</color>
+    <color name="md_theme_on_surface_variant">#43483F</color>
+    
+    <color name="md_theme_background">#FDFDF7</color>
+    <color name="md_theme_on_background">#1A1C19</color>
+    
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_on_error">#FFFFFF</color>
+    
+    <!-- Legacy compatibility -->
+    <color name="toolbar">#1A1C19</color>
+    <color name="toolbar_title">#FFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -12,33 +34,39 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chat_icon_tint">#5A5A5A</color>
 
-    <!-- 既存(チャットUI) - iOS風に調整 -->
+    <!-- Modern Chat UI Colors -->
     <color name="chat_clear_stroke">#00000000</color>
     <color name="chat_clear_bg">#00000000</color>
-    <color name="chat_clear_icon">#FF3B30</color>
-    <color name="chat_mic_container">#FFFFFFFF</color>
+    <color name="chat_clear_icon">#BA1A1A</color>
+    <color name="chat_mic_container">#FFFFFF</color>
     <color name="chat_mic_icon">#09a723</color>
     <color name="chat_send_container">#09a723</color>
-    <color name="chat_send_container_pressed">#0060DF</color>
-    <color name="chat_ripple">#330A84FF</color>
+    <color name="chat_send_container_pressed">#067517</color>
+    <color name="chat_ripple">#2009a723</color>
     <color name="chat_send_bg">#09a723</color>
-    <color name="chat_attach_bg">#FFFFFFFF</color>
+    <color name="chat_attach_bg">#FFFFFF</color>
     <color name="chat_attach_icon">#09a723</color>
 
-    <!-- 追加: Apple(HIG)を意識した色 -->
+    <!-- iOS-inspired System Colors -->
     <color name="ios_blue">#09a723</color>
-    <color name="ios_blue_pressed">#0060DF</color>
+    <color name="ios_blue_pressed">#067517</color>
+    <color name="ios_green">#34C759</color>
+    <color name="ios_red">#FF3B30</color>
     <color name="ios_destructive">#FF3B30</color>
-    <color name="ios_bg_primary">#FFFFFFFF</color>
+    <color name="ios_bg_primary">#FFFFFF</color>
     <color name="ios_bg_secondary">#F2F2F7</color>
-    <color name="ios_separator">#C6C6C8</color>
+    <color name="ios_separator">#E5E5EA</color>
     <color name="ios_label">#000000</color>
     <color name="ios_secondary_label">#8E8E93</color>
-    <color name="ios_ripple">#1F0A84FF</color>
+    <color name="ios_tertiary_label">#C7C7CC</color>
+    <color name="ios_ripple">#1509a723</color>
 
-    <!-- 追加: チャットバブル色（iMessage風） -->
+    <!-- Chat Bubble Colors (Modern) -->
     <color name="chat_outgoing_bg">#09a723</color>
-    <color name="chat_outgoing_text">#FFFFFFFF</color>
-    <color name="chat_incoming_bg">#E9E9EB</color>
+    <color name="chat_outgoing_text">#FFFFFF</color>
+    <color name="chat_incoming_bg">#F0F0F0</color>
     <color name="chat_incoming_text">#000000</color>
+    
+    <!-- Elevation & Shadow -->
+    <color name="elevation_overlay">#0A000000</color>
 </resources>

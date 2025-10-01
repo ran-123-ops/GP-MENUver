@@ -9,7 +9,7 @@ class ChatViewModelFactory(private val context: Context) : ViewModelProvider.Fac
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             val storage = ChatHistoryStorage(context.applicationContext)
             @Suppress("UNCHECKED_CAST")
-            return ChatViewModel(storage) as T
+            return ChatViewModel(storage, context.applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }

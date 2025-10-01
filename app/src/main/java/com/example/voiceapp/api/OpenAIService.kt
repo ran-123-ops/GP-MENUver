@@ -8,7 +8,7 @@ import retrofit2.http.POST
 import retrofit2.http.Streaming
 
 interface OpenAIService {
-    @POST("v1/chat/completions")
+    @POST("chat/completions")
     suspend fun createChatCompletion(
         @Header("Authorization") authorization: String,
         @Header("Content-Type") contentType: String = "application/json",
@@ -16,7 +16,7 @@ interface OpenAIService {
     ): Response<ChatCompletionResponse>
 
     @Streaming
-    @POST("v1/chat/completions")
+    @POST("chat/completions")
     suspend fun createChatCompletionStream(
         @Header("Authorization") authorization: String,
         @Header("Content-Type") contentType: String = "application/json",
