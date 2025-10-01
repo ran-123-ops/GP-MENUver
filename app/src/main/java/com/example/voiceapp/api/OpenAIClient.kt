@@ -62,10 +62,15 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
 
     suspend fun streamMessage(
         messages: List<ChatRequestMessage>,
+        model: String = "gpt-4o-mini",
         onDelta: suspend (String) -> Unit
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val request = ChatCompletionRequest(messages = messages, stream = true)
+            val request = ChatCompletionRequest(
+                model = model,
+                messages = messages,
+                stream = true
+            )
             val response = service.createChatCompletionStream(
                 authorization = "Bearer $apiKey",
                 request = request

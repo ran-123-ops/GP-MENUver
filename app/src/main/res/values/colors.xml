@@ -62,10 +62,11 @@
     <color name="ios_ripple">#1509a723</color>
 
     <!-- Chat Bubble Colors (Modern) -->
+    <color name="chat_background">#FAFAFA</color>
     <color name="chat_outgoing_bg">#09a723</color>
     <color name="chat_outgoing_text">#FFFFFF</color>
-    <color name="chat_incoming_bg">#F0F0F0</color>
-    <color name="chat_incoming_text">#000000</color>
+    <color name="chat_incoming_bg">#FFFFFF</color>
+    <color name="chat_incoming_text">#1A1A1A</color>
     
     <!-- Elevation & Shadow -->
     <color name="elevation_overlay">#0A000000</color>

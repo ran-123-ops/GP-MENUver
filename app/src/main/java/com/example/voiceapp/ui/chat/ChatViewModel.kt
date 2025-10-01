@@ -111,6 +111,13 @@ class ChatViewModel(
 
         _isLoading.value = true
         _error.value = null
+        
+        // モデル選択: 画像があればqwen/qwen2.5-vl-7b、なければgpt-oss-20b
+        val selectedModel = if (image != null) {
+            "qwen/qwen2.5-vl-7b"
+        } else {
+            "gpt-oss-20b"
+        }
 
         viewModelScope.launch {
             try {
@@ -125,13 +132,17 @@ class ChatViewModel(
                     )
                 }
                 apiMessages.addAll(currentMessages.map { chatMessage ->
-                    chatMessage.toApiMessage()
+                    // テキストのみモデルの場合は画像を除外
+                    chatMessage.toApiMessage(includeImage = (selectedModel == "qwen/qwen2.5-vl-7b"))
                 })
 
                 val placeholderIndex = addAssistantPlaceholder()
                 val builder = StringBuilder()
 
-                val streamResult = client.streamMessage(apiMessages) { delta ->
+                val streamResult = client.streamMessage(
+                    messages = apiMessages,
+                    model = selectedModel
+                ) { delta ->
                     builder.append(delta)
                     withContext(Dispatchers.Main) {
                         updateAssistantMessageContent(placeholderIndex, builder.toString(), persist = false)
@@ -165,18 +176,21 @@ class ChatViewModel(
         _error.value = null
     }
 
-    private fun ChatMessage.toApiMessage(): ChatRequestMessage {
+    private fun ChatMessage.toApiMessage(includeImage: Boolean = true): ChatRequestMessage {
         val contents = mutableListOf<MessageContent>()
         if (content.isNotBlank()) {
             contents.add(MessageContent(type = "text", text = content))
         }
-        image?.let {
-            contents.add(
-                MessageContent(
-                    type = "input_image",
-                    imageUrl = ImageUrl(url = it.dataUrl)
+        // includeImageがtrueで、かつ画像が存在する場合のみ追加
+        if (includeImage) {
+            image?.let {
+                contents.add(
+                    MessageContent(
+                        type = "input_image",
+                        imageUrl = ImageUrl(url = it.dataUrl)
+                    )
                 )
-            )
+            }
         }
         if (contents.isEmpty()) {
             contents.add(MessageContent(type = "text", text = ""))
