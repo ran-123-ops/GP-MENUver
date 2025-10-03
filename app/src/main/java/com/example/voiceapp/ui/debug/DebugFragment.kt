@@ -55,10 +55,12 @@ class DebugFragment : Fragment() {
         val serverIp = prefs.getString("custom_server_ip", "") ?: ""
         val serverPort = prefs.getString("custom_server_port", "") ?: ""
         val apiKey = prefs.getString("custom_api_key", "") ?: ""
+        val ttsEnabled = prefs.getBoolean("tts_enabled", true)
         
         binding.etServerIp.setText(serverIp)
         binding.etServerPort.setText(serverPort)
         binding.etApiKey.setText(apiKey)
+        binding.switchTtsEnabled.isChecked = ttsEnabled
     }
 
     private fun saveApiSettings() {
@@ -164,6 +166,16 @@ class DebugFragment : Fragment() {
 
         binding.btnSaveApiSettings.setOnClickListener {
             saveApiSettings()
+        }
+
+        binding.switchTtsEnabled.setOnCheckedChangeListener { _, isChecked ->
+            val prefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            prefs.edit().putBoolean("tts_enabled", isChecked).apply()
+            Toast.makeText(
+                requireContext(),
+                if (isChecked) "読み上げを有効化しました" else "読み上げを無効化しました",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.btnCopyDeviceInfo.setOnClickListener {

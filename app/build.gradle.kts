@@ -26,7 +26,7 @@ android {
         }
 
         val openaiApiKey = localProperties.getProperty("OPENAI_API_KEY") ?: ""
-        val openaiBaseUrl = localProperties.getProperty("OPENAI_BASE_URL") ?: "https://api.openai.com/"
+        val openaiBaseUrl = localProperties.getProperty("OPENAI_BASE_URL") ?: "https://api.openai.com/v1/"
 
         buildConfigField("String", "OPENAI_API_KEY", "\"$openaiApiKey\"")
         buildConfigField("String", "OPENAI_BASE_URL", "\"$openaiBaseUrl\"")

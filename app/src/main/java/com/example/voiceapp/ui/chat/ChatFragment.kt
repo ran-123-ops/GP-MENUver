@@ -387,7 +387,22 @@ class ChatFragment : Fragment() {
 
     private fun speakOut(text: String) {
         if (text.isBlank()) return
-        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, System.currentTimeMillis().toString())
+        
+        // SharedPreferencesからTTS設定を読み込み
+        val prefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+        val isTtsEnabled = prefs.getBoolean("tts_enabled", true) // デフォルトはON
+        
+        if (!isTtsEnabled) return
+        
+        // 絵文字を除去（Unicode絵文字の範囲を除外）
+        val textWithoutEmojis = text.replace(
+            Regex("[\\p{So}\\p{Cn}\\p{Sk}\\p{Emoji}]+"),
+            ""
+        ).trim()
+        
+        if (textWithoutEmojis.isBlank()) return
+        
+        tts?.speak(textWithoutEmojis, TextToSpeech.QUEUE_ADD, null, System.currentTimeMillis().toString())
     }
 
     override fun onDestroyView() {
