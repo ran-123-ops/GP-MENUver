@@ -54,7 +54,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="OpenAI API互換サーバーのエンドポイントを設定"
+                    android:text="OpenAI公式APIのAPIキーを設定してください。\nAPIキーはOpenAIのダッシュボードから取得できます。"
                     android:textSize="13sp"
                     android:fontFamily="sans-serif"
                     android:textColor="@color/ios_secondary_label"
@@ -63,7 +63,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="サーバーIPアドレス"
+                    android:hint="OpenAI APIキー"
                     app:boxBackgroundColor="@color/ios_bg_secondary"
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
@@ -71,61 +71,7 @@
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxStrokeWidth="0dp"
                     app:hintTextColor="@color/ios_secondary_label"
-                    app:helperText="例: 192.168.1.100 (空欄でデフォルトURL)"
-                    app:helperTextTextColor="@color/ios_tertiary_label"
-                    android:layout_marginBottom="12dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etServerIp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:textSize="16sp"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/ios_label"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="ポート番号"
-                    app:boxBackgroundColor="@color/ios_bg_secondary"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxStrokeWidth="0dp"
-                    app:hintTextColor="@color/ios_secondary_label"
-                    app:helperText="例: 8080 (空欄で443/80)"
-                    app:helperTextTextColor="@color/ios_tertiary_label"
-                    android:layout_marginBottom="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etServerPort"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textSize="16sp"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/ios_label"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="APIキー"
-                    app:boxBackgroundColor="@color/ios_bg_secondary"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxStrokeWidth="0dp"
-                    app:hintTextColor="@color/ios_secondary_label"
-                    app:helperText="OpenAI API互換サーバー用 (空欄でビルド設定値)"
+                    app:helperText="sk-proj-... 形式のAPIキーを入力 (空欄の場合はビルド時の設定値を使用)"
                     app:helperTextTextColor="@color/ios_tertiary_label"
                     app:endIconMode="password_toggle"
                     android:layout_marginBottom="16dp">

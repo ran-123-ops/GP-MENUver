@@ -1,5 +1,6 @@
 package com.example.voiceapp.api
 
+import android.util.Log
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -12,6 +13,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
+
+    companion object {
+        private const val TAG = "OpenAIClient"
+    }
 
     private val httpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -66,6 +71,8 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
         onDelta: suspend (String) -> Unit
     ): Result<Unit> = withContext(Dispatchers.IO) {
         try {
+            Log.d(TAG, "ストリーミング開始: model=$model, messages=${messages.size}件")
+            
             val request = ChatCompletionRequest(
                 model = model,
                 messages = messages,
@@ -78,6 +85,7 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
 
             if (!response.isSuccessful) {
                 val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "API ストリームエラー: ${response.code()} - $errorBody")
                 return@withContext Result.failure(Exception("API ストリームエラー: ${response.code()} - $errorBody"))
             }
 
@@ -92,19 +100,60 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
                     if (line.isBlank()) continue
                     if (!line.startsWith("data:")) continue
                     val payload = line.removePrefix("data:").trim()
-                    if (payload == "[DONE]") break
+                    
+                    Log.d(TAG, "ストリームデータ: $payload")
+                    
+                    if (payload == "[DONE]") {
+                        Log.d(TAG, "ストリーム完了")
+                        break
+                    }
                     if (payload.isBlank()) continue
 
                     val jsonElement = runCatching { JsonParser.parseString(payload) }.getOrNull()
-                    val jsonObject = jsonElement?.takeIf { it.isJsonObject }?.asJsonObject ?: continue
-                    val choices = jsonObject.getAsJsonArray("choices") ?: continue
-                    if (choices.size() == 0) continue
-                    val choiceObject = choices[0].takeIf { it.isJsonObject }?.asJsonObject ?: continue
-                    val delta = choiceObject.getAsJsonObject("delta") ?: continue
-                    val contentElement = delta.get("content") ?: continue
+                    if (jsonElement == null) {
+                        Log.w(TAG, "JSON パースエラー: $payload")
+                        continue
+                    }
+                    
+                    val jsonObject = jsonElement.takeIf { it.isJsonObject }?.asJsonObject
+                    if (jsonObject == null) {
+                        Log.w(TAG, "JSONオブジェクトではありません: $payload")
+                        continue
+                    }
+                    
+                    val choices = jsonObject.getAsJsonArray("choices")
+                    if (choices == null || choices.size() == 0) {
+                        Log.w(TAG, "choicesが空またはnull: $payload")
+                        continue
+                    }
+                    
+                    val choiceObject = choices[0].takeIf { it.isJsonObject }?.asJsonObject
+                    if (choiceObject == null) {
+                        Log.w(TAG, "choiceがオブジェクトではありません")
+                        continue
+                    }
+                    
+                    // finish_reason をチェック
+                    val finishReason = choiceObject.get("finish_reason")
+                    if (finishReason != null && !finishReason.isJsonNull) {
+                        Log.d(TAG, "finish_reason: ${finishReason.asString}")
+                    }
+                    
+                    val delta = choiceObject.getAsJsonObject("delta")
+                    if (delta == null) {
+                        Log.w(TAG, "deltaがnull")
+                        continue
+                    }
+                    
+                    val contentElement = delta.get("content")
+                    if (contentElement == null) {
+                        Log.d(TAG, "contentがnull (role定義などの可能性)")
+                        continue
+                    }
 
                     val text = extractContentText(contentElement)
                     if (!text.isNullOrBlank()) {
+                        Log.d(TAG, "コンテンツ抽出: $text")
                         onDelta(text)
                     }
                 }
@@ -112,6 +161,7 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
 
             Result.success(Unit)
         } catch (e: Exception) {
+            Log.e(TAG, "ストリーミング例外", e)
             Result.failure(e)
         }
     }
@@ -157,6 +207,41 @@ class OpenAIClient(private val apiKey: String, private val baseUrl: String) {
                 "output_text" -> obj.get("output_text")?.takeIf { it.isJsonPrimitive }?.asString?.takeIf { it.isNotBlank() }
                 else -> null
             }
+        }
+    }
+
+    suspend fun textToSpeech(
+        text: String,
+        voice: String = "alloy",
+        speed: Double = 1.0
+    ): Result<ByteArray> = withContext(Dispatchers.IO) {
+        try {
+            val request = TTSRequest(
+                model = "tts-1",
+                input = text,
+                voice = voice,
+                speed = speed,
+                responseFormat = "mp3"
+            )
+
+            val response = service.createSpeech(
+                authorization = "Bearer $apiKey",
+                request = request
+            )
+
+            if (response.isSuccessful) {
+                val audioData = response.body()?.bytes()
+                if (audioData != null && audioData.isNotEmpty()) {
+                    Result.success(audioData)
+                } else {
+                    Result.failure(Exception("音声データが空です"))
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Result.failure(Exception("TTS APIエラー: ${response.code()} - $errorBody"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

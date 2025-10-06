@@ -14,7 +14,7 @@ data class ChatCompletionRequest(
 
 data class ChatRequestMessage(
     val role: String, // "user", "assistant", "system"
-    val content: List<MessageContent>
+    val content: Any // String または List<MessageContent>
 )
 
 data class ChatResponseMessage(
@@ -23,14 +23,14 @@ data class ChatResponseMessage(
 )
 
 data class MessageContent(
-    val type: String, // "text" | "input_image"
+    val type: String, // "text" | "image_url"
     val text: String? = null,
     @SerializedName("image_url") val imageUrl: ImageUrl? = null
 )
 
 data class ImageUrl(
     val url: String,
-    val detail: String? = null
+    val detail: String? = "auto"
 )
 
 data class ChatCompletionResponse(
@@ -60,4 +60,13 @@ data class ErrorDetail(
     val message: String,
     val type: String,
     val code: String?
+)
+
+// TTS API用データクラス
+data class TTSRequest(
+    val model: String = "tts-1",
+    val input: String,
+    val voice: String = "alloy",
+    val speed: Double = 1.0,
+    @SerializedName("response_format") val responseFormat: String = "mp3"
 )

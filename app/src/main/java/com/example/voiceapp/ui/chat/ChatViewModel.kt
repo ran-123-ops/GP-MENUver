@@ -1,6 +1,7 @@
 package com.example.voiceapp.ui.chat
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,10 @@ class ChatViewModel(
     private val chatHistoryStorage: ChatHistoryStorage,
     private val context: Context
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "ChatViewModel"
+    }
 
     private val _messages = MutableLiveData<List<ChatMessage>>()
     val messages: LiveData<List<ChatMessage>> = _messages
@@ -61,8 +66,9 @@ class ChatViewModel(
         } else {
             BuildConfig.OPENAI_API_KEY
         }
-        
-        val baseUrl = getBaseUrl()
+
+        // OpenAI公式APIのエンドポイントを使用
+        val baseUrl = "https://api.openai.com/v1/"
 
         if (apiKey.isNotEmpty() && apiKey != "your_openai_api_key_here") {
             openAIClient = OpenAIClient(apiKey, baseUrl)
@@ -71,28 +77,6 @@ class ChatViewModel(
             _isApiKeyConfigured.value = false
             _error.value = "local.propertiesファイルまたはデバッグ画面でAPIキーを設定してください"
         }
-    }
-
-    private fun getBaseUrl(): String {
-        val prefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
-        val customIp = prefs.getString("custom_server_ip", "")?.trim()
-        val customPort = prefs.getString("custom_server_port", "")?.trim()
-
-        // カスタムサーバーが設定されている場合
-        if (!customIp.isNullOrEmpty()) {
-            val port = if (!customPort.isNullOrEmpty()) ":$customPort" else ""
-            val protocol = if (customPort == "443") "https" else "http"
-            // URLが既に/v1/で終わっていない場合のみ追加
-            val baseUrl = "$protocol://$customIp$port"
-            return if (baseUrl.endsWith("/v1") || baseUrl.endsWith("/v1/")) {
-                if (baseUrl.endsWith("/v1")) "$baseUrl/" else baseUrl
-            } else {
-                "$baseUrl/v1/"
-            }
-        }
-
-        // デフォルトのOpenAI URL
-        return BuildConfig.OPENAI_BASE_URL
     }
 
     fun sendMessage(userMessage: String?, image: ImageAttachment? = null, systemPrompt: String? = null) {
@@ -112,12 +96,14 @@ class ChatViewModel(
         _isLoading.value = true
         _error.value = null
         
-        // モデル選択: 画像があればqwen/qwen2.5-vl-7b、なければgpt-oss-20b
-        val selectedModel = if (image != null) {
-            "qwen/qwen2.5-vl-7b"
-        } else {
-            "gpt-oss-20b"
-        }
+        // Web Search設定を取得
+        val isWebSearchEnabled = com.example.voiceapp.ui.settings.SettingsFragment.isWebSearchEnabled(context)
+        
+        // Web Searchが有効な場合はGPT-4o Search Preview (gpt-4o-2024-11-20) を使用
+        // 無効な場合は通常のgpt-4o-miniを使用
+        val selectedModel = if (isWebSearchEnabled) "gpt-4o-2024-11-20" else "gpt-4o-mini"
+        
+        Log.d(TAG, "メッセージ送信: model=$selectedModel, webSearch=$isWebSearchEnabled")
 
         viewModelScope.launch {
             try {
@@ -127,18 +113,17 @@ class ChatViewModel(
                     apiMessages.add(
                         ChatRequestMessage(
                             role = "system",
-                            content = listOf(MessageContent(type = "text", text = systemPrompt))
+                            content = systemPrompt
                         )
                     )
                 }
-                apiMessages.addAll(currentMessages.map { chatMessage ->
-                    // テキストのみモデルの場合は画像を除外
-                    chatMessage.toApiMessage(includeImage = (selectedModel == "qwen/qwen2.5-vl-7b"))
-                })
+                apiMessages.addAll(currentMessages.map { it.toApiMessage() })
 
                 val placeholderIndex = addAssistantPlaceholder()
                 val builder = StringBuilder()
 
+                Log.d(TAG, "ストリーミング開始...")
+                
                 val streamResult = client.streamMessage(
                     messages = apiMessages,
                     model = selectedModel
@@ -151,11 +136,13 @@ class ChatViewModel(
 
                 streamResult.fold(
                     onSuccess = {
+                        Log.d(TAG, "ストリーミング成功: 最終テキスト長=${builder.length}")
                         withContext(Dispatchers.Main) {
                             updateAssistantMessageContent(placeholderIndex, builder.toString(), persist = true)
                         }
                     },
                     onFailure = { exception ->
+                        Log.e(TAG, "ストリーミング失敗", exception)
                         withContext(Dispatchers.Main) {
                             removeAssistantMessage(placeholderIndex)
                             _error.value = "エラー: ${exception.message}"
@@ -163,6 +150,7 @@ class ChatViewModel(
                     }
                 )
             } catch (e: Exception) {
+                Log.e(TAG, "予期しないエラー", e)
                 _error.value = "予期しないエラーが発生しました: ${e.message}"
             } finally {
                 _isLoading.value = false
@@ -176,29 +164,30 @@ class ChatViewModel(
         _error.value = null
     }
 
-    private fun ChatMessage.toApiMessage(includeImage: Boolean = true): ChatRequestMessage {
-        val contents = mutableListOf<MessageContent>()
-        if (content.isNotBlank()) {
-            contents.add(MessageContent(type = "text", text = content))
-        }
-        // includeImageがtrueで、かつ画像が存在する場合のみ追加
-        if (includeImage) {
-            image?.let {
-                contents.add(
-                    MessageContent(
-                        type = "input_image",
-                        imageUrl = ImageUrl(url = it.dataUrl)
-                    )
-                )
+    private fun ChatMessage.toApiMessage(): ChatRequestMessage {
+        // 画像がある場合はマルチモーダル形式、なければテキストのみ
+        return if (image != null) {
+            val contents = mutableListOf<MessageContent>()
+            if (content.isNotBlank()) {
+                contents.add(MessageContent(type = "text", text = content))
             }
+            contents.add(
+                MessageContent(
+                    type = "image_url",
+                    imageUrl = ImageUrl(url = image.dataUrl, detail = "auto")
+                )
+            )
+            ChatRequestMessage(
+                role = if (isUser) "user" else "assistant",
+                content = contents
+            )
+        } else {
+            // テキストのみの場合は文字列として送信
+            ChatRequestMessage(
+                role = if (isUser) "user" else "assistant",
+                content = content.ifBlank { "" }
+            )
         }
-        if (contents.isEmpty()) {
-            contents.add(MessageContent(type = "text", text = ""))
-        }
-        return ChatRequestMessage(
-            role = if (isUser) "user" else "assistant",
-            content = contents
-        )
     }
 
     private fun updateMessages(messages: List<ChatMessage>) {

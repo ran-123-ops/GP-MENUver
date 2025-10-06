@@ -198,7 +198,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- 音声設定セクション -->
+        <!-- 音声読み上げ設定セクション -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -216,13 +216,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="音声設定"
+                    android:text="音声読み上げ設定"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="@color/ios_label"
                     android:layout_marginBottom="16dp" />
 
-                <!-- TTS ON/OFF -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -230,74 +229,119 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="12dp">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_tts_enabled"
-                            android:textSize="16sp"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/ios_label" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_tts_enabled_description"
-                            android:textSize="13sp"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/ios_secondary_label"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
+                        android:text="音声読み上げを有効にする"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchTtsEnabled"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true" />
+                        android:layout_height="wrap_content" />
+
                 </LinearLayout>
 
-                <!-- 絵文字読み上げ ON/OFF -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OFFにするとAIの返答を音声で読み上げません"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/ios_secondary_label"
+                    android:layout_marginBottom="16dp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_emoji_tts_enabled"
-                            android:textSize="16sp"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/ios_label" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_emoji_tts_description"
-                            android:textSize="13sp"
-                            android:fontFamily="sans-serif"
-                            android:textColor="@color/ios_secondary_label"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
+                        android:text="絵文字を読み上げる"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchEmojiTts"
+                        android:id="@+id/switchEmojiReading"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true" />
+                        android:layout_height="wrap_content" />
+
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ONにすると絵文字を日本語で読み上げます"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/ios_secondary_label"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Web Search設定セクション -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/ios_bg_primary">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Web検索設定"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/ios_label"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Web検索モード"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/ios_label" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchWebSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ONにするとGPT-4o Search Preview（gpt-4o-2024-11-20）を使用し、実際のWeb検索を実行します"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/ios_secondary_label"
+                    android:layout_marginTop="8dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

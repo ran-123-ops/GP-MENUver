@@ -48,15 +48,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "21"
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+}
+
+// Javaツールチェーン設定 - Android Studio JBRを使用
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -83,6 +90,9 @@ dependencies {
 
     // Coroutines for async operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Google Play Services Location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

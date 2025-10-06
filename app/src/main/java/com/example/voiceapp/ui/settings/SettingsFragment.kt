@@ -36,8 +36,6 @@ class SettingsFragment : Fragment() {
         private const val KEY_AGENT_NAME = "agent_name"
         private const val KEY_USER_ICON_URI = "user_icon_uri"
         private const val KEY_PERSONALITY = "personality"
-        private const val KEY_TTS_ENABLED = "tts_enabled"
-        private const val KEY_EMOJI_TTS_ENABLED = "emoji_tts_enabled"
 
         // デフォルト値
         const val DEFAULT_USER_NAME = "ユーザー"
@@ -65,14 +63,19 @@ class SettingsFragment : Fragment() {
             return prefs.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY) ?: DEFAULT_PERSONALITY
         }
 
-        fun isTtsEnabled(context: Context): Boolean {
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            return prefs.getBoolean(KEY_TTS_ENABLED, true)
+        fun isTTSEnabled(context: Context): Boolean {
+            val voiceappPrefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            return voiceappPrefs.getBoolean("tts_enabled", true)
         }
 
-        fun isEmojiTtsEnabled(context: Context): Boolean {
-            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            return prefs.getBoolean(KEY_EMOJI_TTS_ENABLED, true)
+        fun isEmojiReadingEnabled(context: Context): Boolean {
+            val voiceappPrefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            return voiceappPrefs.getBoolean("emoji_reading_enabled", true)
+        }
+
+        fun isWebSearchEnabled(context: Context): Boolean {
+            val voiceappPrefs = context.getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            return voiceappPrefs.getBoolean("web_search_enabled", false)
         }
 
         fun resetToDefaults(context: Context) {
@@ -135,8 +138,6 @@ class SettingsFragment : Fragment() {
         val agentName = sharedPreferences.getString(KEY_AGENT_NAME, DEFAULT_AGENT_NAME)
         val iconUriString = sharedPreferences.getString(KEY_USER_ICON_URI, null)
         val personality = sharedPreferences.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY)
-        val ttsEnabled = sharedPreferences.getBoolean(KEY_TTS_ENABLED, true)
-        val emojiTtsEnabled = sharedPreferences.getBoolean(KEY_EMOJI_TTS_ENABLED, true)
 
         binding.etUserName.setText(userName)
         binding.etAgentName.setText(agentName)
@@ -151,9 +152,15 @@ class SettingsFragment : Fragment() {
             "objective" -> binding.rgPersonality.check(binding.radioObjective.id)
             else -> binding.rgPersonality.check(binding.radioKind.id)
         }
-        // 音声設定
-        binding.switchTtsEnabled.isChecked = ttsEnabled
-        binding.switchEmojiTts.isChecked = emojiTtsEnabled
+        
+        // 音声読み上げ設定を読み込み
+        val voiceappPrefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+        val isTtsEnabled = voiceappPrefs.getBoolean("tts_enabled", true)
+        val isEmojiReadingEnabled = voiceappPrefs.getBoolean("emoji_reading_enabled", false)
+        val isWebSearchEnabled = voiceappPrefs.getBoolean("web_search_enabled", false)
+        binding.switchTtsEnabled.isChecked = isTtsEnabled
+        binding.switchEmojiReading.isChecked = isEmojiReadingEnabled
+        binding.switchWebSearch.isChecked = isWebSearchEnabled
     }
 
     private fun setupClickListeners() {
@@ -178,13 +185,40 @@ class SettingsFragment : Fragment() {
             // 必要に応じてナビゲーションヘッダー等を更新
             settingsSavedListener?.onSettingsSaved()
         }
-        // TTS設定: 即時保存
+        
+        // 音声読み上げメインスイッチ
         binding.switchTtsEnabled.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit().putBoolean(KEY_TTS_ENABLED, isChecked).apply()
+            val voiceappPrefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            voiceappPrefs.edit().putBoolean("tts_enabled", isChecked).apply()
+            if (isChecked) {
+                Toast.makeText(requireContext(), "音声読み上げをONにしました", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "音声読み上げをOFFにしました", Toast.LENGTH_SHORT).show()
+            }
         }
-        // 絵文字TTS設定: 即時保存
-        binding.switchEmojiTts.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit().putBoolean(KEY_EMOJI_TTS_ENABLED, isChecked).apply()
+        
+        // 絵文字読み上げスイッチ
+        binding.switchEmojiReading.setOnCheckedChangeListener { _, isChecked ->
+            val voiceappPrefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            voiceappPrefs.edit().putBoolean("emoji_reading_enabled", isChecked).apply()
+            if (isChecked) {
+                Toast.makeText(requireContext(), "絵文字読み上げをONにしました", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "絵文字読み上げをOFFにしました", Toast.LENGTH_SHORT).show()
+            }
+        }
+        
+        binding.switchWebSearch.setOnCheckedChangeListener { _, isChecked ->
+            val voiceappPrefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
+            voiceappPrefs.edit().putBoolean("web_search_enabled", isChecked).apply()
+            
+            val message = if (isChecked) {
+                "Web検索モードをONにしました（GPT-4o Search Preview使用）"
+            } else {
+                "Web検索モードをOFFにしました（gpt-4o-mini使用）"
+            }
+            
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -52,63 +52,58 @@ class DebugFragment : Fragment() {
 
     private fun loadApiSettings() {
         val prefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
-        val serverIp = prefs.getString("custom_server_ip", "") ?: ""
-        val serverPort = prefs.getString("custom_server_port", "") ?: ""
         val apiKey = prefs.getString("custom_api_key", "") ?: ""
         val ttsEnabled = prefs.getBoolean("tts_enabled", true)
         
-        binding.etServerIp.setText(serverIp)
-        binding.etServerPort.setText(serverPort)
         binding.etApiKey.setText(apiKey)
         binding.switchTtsEnabled.isChecked = ttsEnabled
     }
 
     private fun saveApiSettings() {
-        val serverIp = binding.etServerIp.text?.toString()?.trim() ?: ""
-        val serverPort = binding.etServerPort.text?.toString()?.trim() ?: ""
         val apiKey = binding.etApiKey.text?.toString()?.trim() ?: ""
         
         val prefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
         prefs.edit().apply {
-            putString("custom_server_ip", serverIp)
-            putString("custom_server_port", serverPort)
             putString("custom_api_key", apiKey)
             apply()
         }
         
+        val message = if (apiKey.isEmpty()) {
+            "APIキーをクリアしました（ビルド設定値を使用）"
+        } else if (apiKey.startsWith("sk-")) {
+            "OpenAI APIキーを保存しました"
+        } else {
+            "OpenAI APIキーを保存しました（形式確認: sk-で始まる必要あり）"
+        }
+        
         Toast.makeText(
             requireContext(), 
-            "API設定を保存しました", 
+            message, 
             Toast.LENGTH_SHORT
         ).show()
     }
 
     private fun testConnection() {
-        val serverIp = binding.etServerIp.text?.toString()?.trim() ?: ""
-        val serverPort = binding.etServerPort.text?.toString()?.trim() ?: ""
         val customApiKey = binding.etApiKey.text?.toString()?.trim() ?: ""
         
-        // ベースURL構築
-        val baseUrl = if (serverIp.isNotEmpty()) {
-            val port = if (serverPort.isNotEmpty()) ":$serverPort" else ""
-            val protocol = if (serverPort == "443") "https" else "http"
-            // URLが既に/v1/で終わっていない場合のみ追加
-            val url = "$protocol://$serverIp$port"
-            if (url.endsWith("/v1") || url.endsWith("/v1/")) {
-                if (url.endsWith("/v1")) "$url/" else url
-            } else {
-                "$url/v1/"
-            }
-        } else {
-            BuildConfig.OPENAI_BASE_URL
-        }
+        // OpenAI公式APIのエンドポイントを使用
+        val baseUrl = "https://api.openai.com/v1/"
 
         // APIキーを決定（カスタムキーがあればそれを使用、なければビルド設定値）
         val apiKey = if (customApiKey.isNotEmpty()) customApiKey else BuildConfig.OPENAI_API_KEY
 
+        if (apiKey.isEmpty() || apiKey == "your_openai_api_key_here") {
+            binding.tvConnectionStatus.visibility = View.VISIBLE
+            binding.tvConnectionStatus.text = "✗ APIキーが設定されていません"
+            binding.tvConnectionStatus.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.ios_red)
+            )
+            return
+        }
+
         // ステータス表示を表示
         binding.tvConnectionStatus.visibility = View.VISIBLE
-        binding.tvConnectionStatus.text = "接続テスト中...\nURL: $baseUrl"
+        binding.tvConnectionStatus.text = "接続テスト中...\nOpenAI API (gpt-4o-mini)"
         binding.tvConnectionStatus.setTextColor(
             ContextCompat.getColor(requireContext(), R.color.ios_secondary_label)
         )
@@ -123,12 +118,7 @@ class DebugFragment : Fragment() {
                 val testMessages = listOf(
                     ChatRequestMessage(
                         role = "user",
-                        content = listOf(
-                            com.example.voiceapp.api.MessageContent(
-                                type = "text",
-                                text = "Hello"
-                            )
-                        )
+                        content = "Hello"
                     )
                 )
                 
@@ -136,20 +126,20 @@ class DebugFragment : Fragment() {
                 
                 result.fold(
                     onSuccess = { response ->
-                        binding.tvConnectionStatus.text = "✓ 接続成功!\nURL: $baseUrl\nレスポンス: ${response.take(50)}..."
+                        binding.tvConnectionStatus.text = "✓ 接続成功!\nOpenAI API (gpt-4o-mini)\nレスポンス: ${response.take(50)}..."
                         binding.tvConnectionStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), R.color.ios_green)
                         )
                     },
                     onFailure = { error ->
-                        binding.tvConnectionStatus.text = "✗ 接続失敗\nURL: $baseUrl\nエラー: ${error.message}"
+                        binding.tvConnectionStatus.text = "✗ 接続失敗\nOpenAI API\nエラー: ${error.message}"
                         binding.tvConnectionStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), R.color.ios_red)
                         )
                     }
                 )
             } catch (e: Exception) {
-                binding.tvConnectionStatus.text = "✗ 接続エラー\nURL: $baseUrl\n例外: ${e.message}"
+                binding.tvConnectionStatus.text = "✗ 接続エラー\nOpenAI API\n例外: ${e.message}"
                 binding.tvConnectionStatus.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.ios_red)
                 )
