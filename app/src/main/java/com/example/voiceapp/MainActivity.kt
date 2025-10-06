@@ -1,3 +1,4 @@
+//小林藍太
 package com.example.voiceapp
 
 import android.os.Bundle
