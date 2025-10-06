@@ -36,6 +36,8 @@ class SettingsFragment : Fragment() {
         private const val KEY_AGENT_NAME = "agent_name"
         private const val KEY_USER_ICON_URI = "user_icon_uri"
         private const val KEY_PERSONALITY = "personality"
+        private const val KEY_TTS_ENABLED = "tts_enabled"
+        private const val KEY_EMOJI_TTS_ENABLED = "emoji_tts_enabled"
 
         // デフォルト値
         const val DEFAULT_USER_NAME = "ユーザー"
@@ -61,6 +63,16 @@ class SettingsFragment : Fragment() {
         fun getPersonality(context: Context): String {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             return prefs.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY) ?: DEFAULT_PERSONALITY
+        }
+
+        fun isTtsEnabled(context: Context): Boolean {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getBoolean(KEY_TTS_ENABLED, true)
+        }
+
+        fun isEmojiTtsEnabled(context: Context): Boolean {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getBoolean(KEY_EMOJI_TTS_ENABLED, true)
         }
 
         fun resetToDefaults(context: Context) {
@@ -123,6 +135,8 @@ class SettingsFragment : Fragment() {
         val agentName = sharedPreferences.getString(KEY_AGENT_NAME, DEFAULT_AGENT_NAME)
         val iconUriString = sharedPreferences.getString(KEY_USER_ICON_URI, null)
         val personality = sharedPreferences.getString(KEY_PERSONALITY, DEFAULT_PERSONALITY)
+        val ttsEnabled = sharedPreferences.getBoolean(KEY_TTS_ENABLED, true)
+        val emojiTtsEnabled = sharedPreferences.getBoolean(KEY_EMOJI_TTS_ENABLED, true)
 
         binding.etUserName.setText(userName)
         binding.etAgentName.setText(agentName)
@@ -137,6 +151,9 @@ class SettingsFragment : Fragment() {
             "objective" -> binding.rgPersonality.check(binding.radioObjective.id)
             else -> binding.rgPersonality.check(binding.radioKind.id)
         }
+        // 音声設定
+        binding.switchTtsEnabled.isChecked = ttsEnabled
+        binding.switchEmojiTts.isChecked = emojiTtsEnabled
     }
 
     private fun setupClickListeners() {
@@ -160,6 +177,14 @@ class SettingsFragment : Fragment() {
             sharedPreferences.edit().putString(KEY_PERSONALITY, selectedPersonality).apply()
             // 必要に応じてナビゲーションヘッダー等を更新
             settingsSavedListener?.onSettingsSaved()
+        }
+        // TTS設定: 即時保存
+        binding.switchTtsEnabled.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(KEY_TTS_ENABLED, isChecked).apply()
+        }
+        // 絵文字TTS設定: 即時保存
+        binding.switchEmojiTts.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(KEY_EMOJI_TTS_ENABLED, isChecked).apply()
         }
     }
 

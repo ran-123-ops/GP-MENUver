@@ -388,21 +388,24 @@ class ChatFragment : Fragment() {
     private fun speakOut(text: String) {
         if (text.isBlank()) return
         
-        // SharedPreferencesからTTS設定を読み込み
-        val prefs = requireContext().getSharedPreferences("voiceapp_settings", Context.MODE_PRIVATE)
-        val isTtsEnabled = prefs.getBoolean("tts_enabled", true) // デフォルトはON
-        
+        // TTS設定を読み込み
+        val isTtsEnabled = SettingsFragment.isTtsEnabled(requireContext())
         if (!isTtsEnabled) return
         
-        // 絵文字を除去（Unicode絵文字の範囲を除外）
-        val textWithoutEmojis = text.replace(
-            Regex("[\\p{So}\\p{Cn}\\p{Sk}\\p{Emoji}]+"),
-            ""
-        ).trim()
+        // 絵文字読み上げ設定を読み込み
+        val isEmojiTtsEnabled = SettingsFragment.isEmojiTtsEnabled(requireContext())
         
-        if (textWithoutEmojis.isBlank()) return
+        val textForSpeech = if (isEmojiTtsEnabled) {
+            // 絵文字を日本語テキストに変換
+            EmojiConverter.convertEmojisToText(text)
+        } else {
+            // 絵文字を除去
+            text.replace(Regex("[\\p{So}\\p{Cn}\\p{Sk}\\p{Emoji}]+"), "").trim()
+        }
         
-        tts?.speak(textWithoutEmojis, TextToSpeech.QUEUE_ADD, null, System.currentTimeMillis().toString())
+        if (textForSpeech.isBlank()) return
+        
+        tts?.speak(textForSpeech, TextToSpeech.QUEUE_ADD, null, System.currentTimeMillis().toString())
     }
 
     override fun onDestroyView() {

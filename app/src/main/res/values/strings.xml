@@ -43,4 +43,8 @@
     <string name="debug_reset_settings_done">設定を初期化しました</string>
     <string name="settings_open_debug">デバッグ画面を開く</string>
     <string name="settings_debug_description">アプリの状態確認やリセット操作を行う開発者向けの画面です。</string>
+    <string name="settings_tts_enabled">音声読み上げ</string>
+    <string name="settings_tts_enabled_description">AIの返答を音声で読み上げます</string>
+    <string name="settings_emoji_tts_enabled">絵文字の読み上げ</string>
+    <string name="settings_emoji_tts_description">絵文字を日本語で読み上げます（例: 😊 → 微笑み）</string>
 </resources>
